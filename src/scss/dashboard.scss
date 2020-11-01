@@ -1,0 +1,99 @@
+@import "variables";
+@import "mixins";
+
+.db {
+  .db__header {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px -5px 10px black;
+    height: 64px;
+    font-size: 1.5rem;
+  }
+
+  .db__toolbar {
+    height: 180px;
+    background: #f1f3f4;
+
+    .db__toolbar__view {
+      width: 1000px;
+      height: 100%;
+      margin: 0 auto;
+
+      display:flex;
+      align-items: center;
+
+      .item {
+        height: 120px;
+        width: 120px;
+        background: white;
+        margin: 0 40px;
+        padding-top: 10px;
+        border-radius: 6px;
+        border: 2px solid white;
+        cursor: pointer;
+
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+
+        &:hover {
+          border: 2px solid lime;
+        }
+
+        a {
+          width: 100px;
+          min-height: 80px;
+          display: block;
+          background: white;
+          border-radius: 4px;
+          border: 1px solid #eee;
+
+          &.new-table {
+            background: url(../assets/add-table.png) center no-repeat;
+            background-size: 40%;
+          }
+        }
+
+        span {
+          height: 100%;
+          display: flex;
+          align-items: center;
+        }
+
+      }
+    }
+  }
+
+  .db__table {
+    .db__table__view {
+      width: 1000px;
+      margin: 0 auto;
+      padding-top: 32px;
+      font-size: 16px;
+
+      .row, .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 40px;
+        border-radius: 16px;
+        padding: 0 24px;
+      }
+
+      .header {
+        font-weight: 500;
+        position: relative;
+        box-shadow: 0 5px 18px -17px black;
+      }
+
+      .row {
+        cursor: pointer;
+        &:hover {
+          background: #f1f3f4;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+@import "variables";
+
+@mixin button($color) {
+  border-radius: 2px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  color: $gray-main;
+  
+  &:hover {
+    border: 1px solid $color;
+  }
+  &:active {
+    background: rgba($color, .7);
+  }
+  
+}
