@@ -27,15 +27,15 @@
       height: 100%;
     }
 
-    .column, .row__info {
+    .column, .column__info {
       border-right: 1px solid #c0c0c0;
       border-bottom: 2px solid #c0c0c0;
       border-top: none;
       border-left: none;
       background: #f8f9fa;
     }
-    
-    .row__info {
+
+    .column__info {
       height: 100%;
       min-width: $fx-width;
       border-right: 2px solid #c0c0c0;
