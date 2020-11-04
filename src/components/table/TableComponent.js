@@ -4,6 +4,6 @@ import {getTemplate} from '@/components/table/table.template';
 export class TableComponent extends ExcelComponent {
   static className = 'excel__table';
   toHtml() {
-    return getTemplate();
+    return getTemplate(20, 35);
   }
 }
