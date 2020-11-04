@@ -17,7 +17,6 @@
     display: flex;
     justify-self: center;
     align-items: center;
-    overflow-x: auto;
     height: 24px;
 
     .columns {
@@ -34,7 +33,7 @@
       border-left: none;
       background: #f8f9fa;
     }
-    
+
     .row__info {
       height: 100%;
       min-width: $fx-width;
@@ -55,6 +54,13 @@
     display: flex;
     align-items: center;
 
+    .ceils {
+      display: flex;
+      justify-self: center;
+      align-items: center;
+      height: 100%;
+    }
+
     .ceil, .ceil__info {
       border: 1px solid #c0c0c0;
       border-left: none;
@@ -68,6 +74,7 @@
 
     .ceil__info {
       background: #f8f9fa;
+      min-width: $fx-width;
       width: $fx-width;
       border-right: 2px solid #c0c0c0;
     }
