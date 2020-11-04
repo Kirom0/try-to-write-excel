@@ -1,4 +1,5 @@
 import {$} from '@core/dom';
+import {arrayFrom} from '@core/utils';
 
 export class Excel {
   constructor(selector, options) {
@@ -6,13 +7,17 @@ export class Excel {
     this.components = (options.components || []).map(
         (Component) => new Component()
     );
-    this.class = options.class || [];
+    this.classes = options.classes;
   }
 
   getRoot() {
-    const $root = $.create('div', this.class);
+    const $root = $.create('div', {
+      class: arrayFrom(this.classes).join(' '),
+    });
     this.components.forEach((component) => {
-      const $el = $.create('div', component.constructor.className);
+      const $el = $.create('div', {
+        class: arrayFrom(component.constructor.className).join(' '),
+      });
       $el.html = component.toHtml();
 
       component.$root = $el;

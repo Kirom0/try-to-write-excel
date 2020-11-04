@@ -1,5 +1,3 @@
-import {forEachExtension} from '@core/utils';
-
 class Dom {
   constructor(selector) {
     this.nativeEl =
@@ -46,10 +44,10 @@ export function $(selector) {
   return new Dom(selector);
 }
 
-$.create = (tagName, classes = '') => {
+$.create = (tagName, attributes = {}) => {
   const el = document.createElement(tagName);
-  forEachExtension(classes, (_class) => {
-    el.classList.add(_class);
+  Object.keys(attributes).forEach((key)=>{
+    el.setAttribute(key, attributes[key] || '');
   });
   return $(el);
 };

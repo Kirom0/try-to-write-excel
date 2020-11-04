@@ -24,16 +24,19 @@ function createRow(options) {
     childValues = [],
   } = options;
 
-  const $el = $.create('div', 'row' + postfix);
+  const $el = $.create('div', {class: 'row' + postfix});
   $el.append(
-      $.create('div', childClass + '__info')
+      $.create('div', {class: childClass + '__info'})
           .setHtml(infoValue)
   );
   $el.append(
-      $.create('div', childClass + 's')
+      $.create('div', {class: childClass + 's'})
           .setHtml(
               childValues.map((child)=>
-                $.create('div', childClass)
+                $.create('div', {
+                  class: childClass,
+                  contenteditable: childClass === 'ceil',
+                })
                     .setHtml(child).html
               ).join('')
           )
