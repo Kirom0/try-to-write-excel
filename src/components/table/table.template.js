@@ -2,7 +2,7 @@ import {$} from '@core/dom';
 import {range} from '@core/utils';
 
 export function getTemplate(rows, columns) {
-  return createRow({
+  return createHeadline({
     postfix: '__main',
     childClass: 'column',
     childValues: range(columns).map(getLitterByNumber),
@@ -27,7 +27,9 @@ function createRow(options) {
   const $el = $.create('div', {class: 'row' + postfix});
   $el.append(
       $.create('div', {class: childClass + '__info'})
-          .setHtml(infoValue)
+          .setHtml(infoValue + $.create('div', {
+            class: 'row__resizer',
+          }).html)
   );
   $el.append(
       $.create('div', {class: childClass + 's'})
@@ -35,9 +37,40 @@ function createRow(options) {
               childValues.map((child)=>
                 $.create('div', {
                   class: childClass,
-                  contenteditable: childClass === 'ceil',
+                  contenteditable: '' + (childClass === 'ceil'),
                 })
                     .setHtml(child).html
+              ).join('')
+          )
+  );
+
+  return $el.html;
+}
+
+function createHeadline(options) {
+  const {
+    infoValue = '',
+    postfix = '',
+    childClass = '',
+    childValues = [],
+  } = options;
+
+  const $el = $.create('div', {class: 'row' + postfix});
+  $el.append(
+      $.create('div', {class: childClass + '__info'})
+          .setHtml(infoValue)
+  );
+  const resizer = $.create('div', {
+    class: childClass + '__resizer',
+  }).html;
+  $el.append(
+      $.create('div', {class: childClass + 's'})
+          .setHtml(
+              childValues.map((child)=>
+                $.create('div', {
+                  class: childClass,
+                })
+                    .setHtml(child + resizer).html
               ).join('')
           )
   );
