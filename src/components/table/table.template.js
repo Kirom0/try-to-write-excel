@@ -10,10 +10,14 @@ export function getTemplate(rows, columns) {
     range(rows).map(
         (row) => createRow({
           infoValue: row + 1,
-          childClass: 'ceil',
+          childClass: 'cell',
           childValues: range(columns).map((item) => ''),
         })
-    ).join('');
+    ).join('') +
+    $.create('div', {
+      class: 'rows__resizer',
+      'data-resizer': 'rows',
+    }).html;
 }
 
 function createRow(options) {
@@ -26,18 +30,26 @@ function createRow(options) {
 
   const $el = $.create('div', {class: 'row' + postfix});
   $el.append(
-      $.create('div', {class: childClass + '__info'})
-          .setHtml(infoValue + $.create('div', {
-            class: 'row__resizer',
-          }).html)
+      $.create('div', {
+        class: childClass + '__info',
+        'data-type': 'resizable',
+        'data-row-title': infoValue,
+      }).setHtml(infoValue +
+        $.create('div', {
+          class: 'row__resizer',
+          'data-resizer': 'row',
+        }).html
+      )
   );
   $el.append(
       $.create('div', {class: childClass + 's'})
           .setHtml(
-              childValues.map((child)=>
+              childValues.map((child, index)=>
                 $.create('div', {
                   class: childClass,
                   contenteditable: '' + (childClass === 'ceil'),
+                  'data-column-title': getLitterByNumber(index),
+                  'data-row-title': infoValue,
                 })
                     .setHtml(child).html
               ).join('')
@@ -62,16 +74,23 @@ function createHeadline(options) {
   );
   const resizer = $.create('div', {
     class: childClass + '__resizer',
+    'data-resizer': 'column',
   }).html;
   $el.append(
       $.create('div', {class: childClass + 's'})
           .setHtml(
-              childValues.map((child)=>
+              childValues.map((child, index)=>
                 $.create('div', {
                   class: childClass,
+                  'data-type': 'resizable',
+                  'data-column-title': child,
                 })
                     .setHtml(child + resizer).html
-              ).join('')
+              ).join('') +
+              $.create('div', {
+                class: 'columns__resizer',
+                'data-resizer': 'columns',
+              }).html
           )
   );
 

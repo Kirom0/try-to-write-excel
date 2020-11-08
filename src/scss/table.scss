@@ -24,6 +24,16 @@
       justify-self: center;
       align-items: center;
       height: 100%;
+
+      &__resizer {
+        width: 3px;
+        background: $select-color;
+        height: 100%;
+        position: absolute;
+        top:0;
+        left: 170px;
+        display: none;
+      }
     }
 
     .column, .column__info {
@@ -64,30 +74,36 @@
     }
   }
 
+  .rows__resizer {
+    height: 3px;
+    width: 100%;
+    background: $select-color;
+    position: absolute;
+  }
+
   .row {
-    height: 24px;
     display: flex;
     align-items: center;
 
-    .ceils {
+    .cells {
       display: flex;
       justify-self: center;
       align-items: center;
       height: 100%;
     }
 
-    .ceil, .ceil__info {
+    .cell, .cell__info {
       border: 1px solid #c0c0c0;
       border-left: none;
       border-top: none;
-      height: 100%;
+      height: 24px;
 
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .ceil__info {
+    .cell__info {
       background: #f8f9fa;
       min-width: $fx-width;
       width: $fx-width;
@@ -108,7 +124,7 @@
       }
     }
 
-    .ceil {
+    .cell {
       width: 120px;
       outline: none;
       color: black;

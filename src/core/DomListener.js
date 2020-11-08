@@ -1,26 +1,34 @@
 /**
  * Класс который умеет слушать
  */
+import {$} from '@core/dom';
+
 export class DomListener {
   constructor($root, listeners) {
     this.$root = $root;
     this.listeners = listeners || [];
+    this.globalListeners = [];
   }
 
-  addListener(listener) {
-    this.listeners.push(listener);
+  addGlobalListener(listener) {
+    if (this.globalListeners.includes(listener)) {
+      return;
+    }
+    this.globalListeners.push(listener);
     const methodName = getMethodName(listener);
     binding(
         [methodName],
         this,
         this.name + ' Conponent'
     );
-    this.$root.on(listener, this[methodName]);
+    $(document).on(listener, this[methodName]);
   }
 
-  eraseListener(listener) {
-    this.$root.off(listener, this[getMethodName(listener)]);
-    this.listeners = this.listeners.filter((item) => item !== listener);
+  eraseGlobalListener(listener) {
+    $(document).off(listener, this[getMethodName(listener)]);
+    this.globalListeners = this.globalListeners.filter(
+        (item) => item !== listener
+    );
   }
 
   initListeners() {
