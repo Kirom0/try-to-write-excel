@@ -10,25 +10,18 @@ export class DomListener {
     this.globalListeners = [];
   }
 
-  addGlobalListener(listener) {
-    if (this.globalListeners.includes(listener)) {
+  addGlobalListener(type, listener) {
+    if (Object.prototype.hasOwnProperty.call(this.globalListeners, type)) {
       return;
     }
-    this.globalListeners.push(listener);
-    const methodName = getMethodName(listener);
-    binding(
-        [methodName],
-        this,
-        this.name + ' Conponent'
-    );
-    $(document).on(listener, this[methodName]);
+    listener = listener.bind(this);
+    this.globalListeners[type] = listener;
+    $(document).on(type, listener);
   }
 
-  eraseGlobalListener(listener) {
-    $(document).off(listener, this[getMethodName(listener)]);
-    this.globalListeners = this.globalListeners.filter(
-        (item) => item !== listener
-    );
+  eraseGlobalListener(type) {
+    $(document).off(type, this.globalListeners[type]);
+    delete this.globalListeners[type];
   }
 
   initListeners() {
