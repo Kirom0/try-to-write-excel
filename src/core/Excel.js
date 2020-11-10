@@ -5,7 +5,9 @@ export class Excel {
   constructor(selector, options) {
     this.$el = $(selector);
     this.components = (options.components || []).map(
-        (Component) => new Component()
+        (Component) => new Component($.create('div', {
+          class: arrayFrom(Component.className).join(' '),
+        }))
     );
     this.classes = options.classes;
   }
@@ -15,13 +17,7 @@ export class Excel {
       class: arrayFrom(this.classes).join(' '),
     });
     this.components.forEach((component) => {
-      const $el = $.create('div', {
-        class: arrayFrom(component.constructor.className).join(' '),
-      });
-      $el.html = component.toHtml();
-
-      component.$root = $el;
-      $root.append($el);
+      $root.append(component.$root);
     });
     return $root;
   }
@@ -30,7 +26,7 @@ export class Excel {
     this.$el.append(this.getRoot());
     this.components.forEach(
         (component) => {
-          component.initListeners();
+          component.init();
         });
   }
 }

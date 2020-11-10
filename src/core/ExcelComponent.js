@@ -1,4 +1,4 @@
-import {DomListener, getMethodName} from '@core/DomListener';
+import {binding, DomListener, getMethodName} from '@core/DomListener';
 
 
 /**
@@ -18,6 +18,11 @@ export class ExcelComponent extends DomListener {
     );
   }
 
+  init() {
+    this.$root.html = this.toHtml();
+    this.initListeners();
+  }
+
   destroy() {
     this.removeListeners();
   }
@@ -25,15 +30,4 @@ export class ExcelComponent extends DomListener {
   toHtml() {
     return '';
   }
-}
-
-function binding(functions, context, name) {
-  functions.forEach((func) => {
-    if (!context[func]) {
-      throw new Error(
-          `Method ${func} is not implemented in ${name}`
-      );
-    }
-    context[func] = context[func].bind(context);
-  });
 }

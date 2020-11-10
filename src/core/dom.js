@@ -31,11 +31,33 @@ class Dom {
     this.nativeEl.removeEventListener(eventType, callback);
   }
 
+  closest(selector) {
+    return $(this.nativeEl.closest(selector));
+  }
+
+  getBoundingClientRect() {
+    return this.nativeEl.getBoundingClientRect();
+  }
+
   append(node) {
     if (node instanceof Dom) {
       node = node.nativeEl;
     }
     this.nativeEl.append(node);
+  }
+
+  get dataset() {
+    return this.nativeEl.dataset;
+  }
+
+  getAttribute(attribute) {
+    return this.nativeEl.getAttribute(attribute);
+  }
+
+  setStyle(styles) {
+    Object.keys(styles).forEach((key)=>{
+      this.nativeEl.style[key] = styles[key];
+    });
   }
 }
 
