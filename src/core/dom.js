@@ -50,6 +50,10 @@ class Dom {
     return this.nativeEl.dataset;
   }
 
+  get classList() {
+    return this.nativeEl.classList;
+  }
+
   getAttribute(attribute) {
     return this.nativeEl.getAttribute(attribute);
   }

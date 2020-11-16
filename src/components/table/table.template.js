@@ -6,7 +6,7 @@ export function getTemplate(rows, columns) {
     postfix: '__main',
     childClass: 'column',
     childValues: range(columns).map(getLitterByNumber),
-  }) +
+  }).html +
     range(rows).map(
         (row) => createRow({
           infoValue: row + 1,
@@ -47,7 +47,7 @@ function createRow(options) {
               childValues.map((child, index)=>
                 $.create('div', {
                   class: childClass,
-                  contenteditable: '' + (childClass === 'ceil'),
+                  contenteditable: '' + (childClass === 'cell'),
                   'data-column-title': getLitterByNumber(index),
                   'data-row-title': infoValue,
                 })
@@ -57,6 +57,45 @@ function createRow(options) {
   );
 
   return $el.html;
+}
+
+export function getSmartTemplate(cells, rows, columns) {
+  const $elems = [];
+  $elems.push(createHeadline({
+    postfix: '__main',
+    childClass: 'column',
+    childValues: range(columns).map(getLitterByNumber),
+  }));
+  range(rows).map((index) => {
+    const $el = $.create('div', {class: 'row'});
+    $el.append(
+        $.create('div', {
+          class: 'cell__info',
+          'data-type': 'resizable',
+          'data-row-title': index,
+        }).setHtml(index +
+          $.create('div', {
+            class: 'row__resizer',
+            'data-resizer': 'row',
+          }).html
+        )
+    );
+
+    const $cellsContainer = $.create('div', {class: 'cells'});
+    for (let i = 0; i < columns; i++) {
+      $cellsContainer.append(cells[index][i].elem);
+    }
+
+    $el.append($cellsContainer);
+    return $el;
+  }).forEach(($el) => $elems.push($el));
+
+  $elems.push($.create('div', {
+    class: 'rows__resizer',
+    'data-resizer': 'rows',
+  }));
+
+  return $elems;
 }
 
 function createHeadline(options) {
@@ -94,7 +133,16 @@ function createHeadline(options) {
           )
   );
 
-  return $el.html;
+  return $el;
+}
+
+export function cellInitial(row, col) {
+  return $.create('div', {
+    class: 'cell',
+    'data-column-title': getLitterByNumber(col),
+    'data-row-title': '' + row,
+    contenteditable: true,
+  });
 }
 
 function getLitterByNumber(number) {
@@ -112,4 +160,13 @@ function getLitterByNumber(number) {
     result += reversedResult[reversedResult.length - i - 1];
   }
   return result;
+}
+
+export function getNumberByLitter(litter) {
+  const A = 'A'.charCodeAt(0);
+  let res = 0;
+  for (let i = 0; i < litter.length; i++) {
+    res = res * 26 + litter.charCodeAt(i) - A;
+  }
+  return res;
 }
