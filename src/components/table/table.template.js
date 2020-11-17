@@ -64,7 +64,7 @@ export function getSmartTemplate(cells, rows, columns) {
   $elems.push(createHeadline({
     postfix: '__main',
     childClass: 'column',
-    childValues: range(columns).map(getLitterByNumber),
+    childValues: range(columns),
   }));
   range(rows).map((index) => {
     const $el = $.create('div', {class: 'row'});
@@ -72,7 +72,7 @@ export function getSmartTemplate(cells, rows, columns) {
         $.create('div', {
           class: 'cell__info',
           'data-type': 'resizable',
-          'data-row-title': index,
+          'data-row': index,
         }).setHtml(index +
           $.create('div', {
             class: 'row__resizer',
@@ -122,9 +122,9 @@ function createHeadline(options) {
                 $.create('div', {
                   class: childClass,
                   'data-type': 'resizable',
-                  'data-column-title': child,
+                  'data-column': '' + child,
                 })
-                    .setHtml(child + resizer).html
+                    .setHtml(getLitterByNumber(child) + resizer).html
               ).join('') +
               $.create('div', {
                 class: 'columns__resizer',
@@ -139,8 +139,9 @@ function createHeadline(options) {
 export function cellInitial(row, col) {
   return $.create('div', {
     class: 'cell',
-    'data-column-title': getLitterByNumber(col),
-    'data-row-title': '' + row,
+    'data-column': '' + col,
+    'data-row': '' + row,
+    'data-type': 'cell',
     contenteditable: true,
   });
 }

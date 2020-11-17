@@ -1,6 +1,6 @@
 import {ExcelComponent} from '@core/ExcelComponent';
 import {
-  cellInitial, getNumberByLitter,
+  cellInitial,
   getSmartTemplate,
   getTemplate,
 } from '@/components/table/table.template';
@@ -9,15 +9,18 @@ import {shouldResize} from '@/components/table/table.functions';
 import {resizeHandler} from '@/components/table/table.resizing';
 import {TableCell} from '@/components/table/table.cell';
 import {range} from '@core/utils';
-import {$} from '@core/dom';
-import {Selector} from '@/components/table/table.selector';
+import {
+  Selector,
+  selectorHandler,
+  shouldSelect,
+} from '@/components/table/table.selector';
 
 export class TableComponent extends ExcelComponent {
   static className = 'excel__table';
   constructor($root, rows, cols) {
     super($root, {
       name: 'Table',
-      listeners: ['mousedown', 'click'],
+      listeners: ['mousedown'],
     });
     this.rows = rows || 10;
     this.cols = cols || 20;
@@ -53,16 +56,9 @@ export class TableComponent extends ExcelComponent {
     console.log('mousedown', event);
     if (shouldResize(event)) {
       resizeHandler(this, event);
+    } else if (shouldSelect(event)) {
+      selectorHandler(this, event);
     }
-  }
-
-  onClick(event) {
-    const $el = $(event.target);
-    // console.log($el.dataset);
-    const row = $el.dataset['rowTitle'];
-    const col = getNumberByLitter($el.dataset['columnTitle']);
-    this.selector.select(row, col);
-    // console.log(row, col);
   }
 
   htmlInitial() {

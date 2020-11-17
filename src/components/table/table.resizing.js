@@ -9,6 +9,7 @@ export function resizeHandler(context, event) {
       event.pageY;
 
   const mousemove = (event) => {
+    console.log('mousemove');
     const cssSelector =
       `[data-resizer="${type}s"]`;
 
@@ -41,8 +42,8 @@ export function resizeHandler(context, event) {
         event.pageY - startPosition;
     const DOMRect = $element.getBoundingClientRect();
     const cssSelector =
-      `[data-${type}-title="${
-        $element.getAttribute(`data-${type}-title`)
+      `[data-${type}="${
+        $element.getAttribute(`data-${type}`)
       }"]`;
 
     if (type === 'column') {
