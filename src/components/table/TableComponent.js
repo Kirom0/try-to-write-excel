@@ -1,8 +1,7 @@
 import {ExcelComponent} from '@core/ExcelComponent';
 import {
-  cellInitial,
+  cellInitial, getPureHtml,
   getSmartTemplate,
-  getTemplate,
 } from '@/components/table/table.template';
 import {CSSRules} from '@core/css';
 import {shouldResize} from '@/components/table/table.functions';
@@ -14,6 +13,12 @@ import {
   selectorHandler,
   shouldSelect,
 } from '@/components/table/table.selector';
+import {
+  initScroll,
+  scrollHandler,
+  shouldScroll,
+} from '@/components/table/table.scroller';
+import {$} from '@core/dom';
 
 export class TableComponent extends ExcelComponent {
   static className = 'excel__table';
@@ -46,18 +51,25 @@ export class TableComponent extends ExcelComponent {
     // super.init();
     this.initListeners();
     this.initCells();
-    this.htmlInitial();
+    // this.htmlInitial();
+    this.toHtml();
     this.selector = new Selector(this.cells);
     this.selector.select(0, 0);
+    this.columnSizes = (new Array(15)).fill(120);
+    this.rowSizes = (new Array(9)).fill(77);
+    initScroll(this);
   }
 
 
   onMousedown(event) {
     console.log('mousedown', event);
+    const $target = $(event.target);
     if (shouldResize(event)) {
       resizeHandler(this, event);
     } else if (shouldSelect(event)) {
       selectorHandler(this, event);
+    } else if (shouldScroll(event, $target)) {
+      scrollHandler(this, event, $target);
     }
   }
 
@@ -69,6 +81,7 @@ export class TableComponent extends ExcelComponent {
 
   toHtml() {
     console.log(this.rows, this.cols);
-    return getTemplate(this.rows, this.cols);
+    // return getTemplate(this.rows, this.cols);
+    this.$root.html = getPureHtml();
   }
 }

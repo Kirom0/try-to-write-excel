@@ -54,6 +54,18 @@ class Dom {
     return this.nativeEl.classList;
   }
 
+  get parent() {
+    return $(this.nativeEl.parentElement);
+  }
+
+  get style() {
+    return this.nativeEl.style;
+  }
+
+  querySelector(selector) {
+    return $(this.nativeEl.querySelector(selector));
+  }
+
   getAttribute(attribute) {
     return this.nativeEl.getAttribute(attribute);
   }
