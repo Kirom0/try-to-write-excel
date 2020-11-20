@@ -14,8 +14,7 @@ import {
   shouldSelect,
 } from '@/components/table/table.selector';
 import {
-  initScroll,
-  scrollHandler,
+  ScrollController,
   shouldScroll,
 } from '@/components/table/table.scroller';
 import {$} from '@core/dom';
@@ -30,6 +29,7 @@ export class TableComponent extends ExcelComponent {
     this.rows = rows || 10;
     this.cols = cols || 20;
     this.cssRules = new CSSRules();
+    this.scroller = new ScrollController(this);
   }
 
   initCells() {
@@ -57,7 +57,7 @@ export class TableComponent extends ExcelComponent {
     this.selector.select(0, 0);
     this.columnSizes = (new Array(15)).fill(120);
     this.rowSizes = (new Array(9)).fill(77);
-    initScroll(this);
+    this.scroller.init();
   }
 
 
@@ -69,7 +69,7 @@ export class TableComponent extends ExcelComponent {
     } else if (shouldSelect(event)) {
       selectorHandler(this, event);
     } else if (shouldScroll(event, $target)) {
-      scrollHandler(this, event, $target);
+      this.scroller.scrollHandler(event, $target);
     }
   }
 

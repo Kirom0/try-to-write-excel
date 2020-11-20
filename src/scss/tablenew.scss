@@ -133,6 +133,11 @@
           display: flex;
           align-items: center;
           padding: 2px;
+          cursor: default;
+
+          &.selected {
+            border: 2px solid #1a73e8;
+          }
         }
       }
     }
@@ -153,7 +158,6 @@
 
         &:hover {
           background: $column-border-color;
-          cursor: pointer;
         }
       }
     }
@@ -178,7 +182,6 @@
 
         &:hover {
           background: $column-border-color;
-          cursor: pointer;
         }
       }
     }
