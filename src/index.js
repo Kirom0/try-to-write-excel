@@ -13,7 +13,7 @@ const excel = new Excel('#app', {
     FormulaComponent,
     TableComponent,
   ],
-  class: 'excel',
+  classes: 'excel',
 });
 
 excel.render();

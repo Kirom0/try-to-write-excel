@@ -17,6 +17,7 @@ export class ScrollController {
   }
 
   scrollHandler(event, $target) {
+    this.refresh();
     const isHorizontal = $target.dataset['scroller'] === 'horizontal';
     const nativeHeadline =
       isHorizontal ?
@@ -134,6 +135,12 @@ export class ScrollController {
       return tableLength - accum;
     };
 
+    ({
+      width: this.tableWidth,
+      height: this.tableHeight,
+    } = this.nativeTable.getBoundingClientRect());
+
+    console.log(this.nativeTable.scrollWidth);
     this.table.cssRules.addRules({
       '.filler[data-filler=horizontal]': {
         'flex': `0 0 ${getFillerLength(true)}px`,
@@ -142,27 +149,22 @@ export class ScrollController {
         'flex': `0 0 ${getFillerLength(false)}px`,
       },
     });
-
-    this.trackWidth = this.nativeHScroller.parentElement.scrollWidth;
-    this.trackHeight = this.nativeRScroller.parentElement.scrollHeight;
-
-    ({
-      width: this.tableWidth,
-      height: this.tableHeight,
-    } = this.nativeTable.getBoundingClientRect());
-
+    console.log(this.nativeTable.scrollWidth);
     ({
       scrollWidth: this.tableScrollWidth,
       scrollHeight: this.tableScrollHeight,
     } = this.nativeTable);
 
-    this.leftBorderTrackWidth = (this.tableScrollWidth - this.tableWidth);
-    this.topBorderTrackHeight = (this.tableScrollHeight - this.tableHeight);
+    this.trackWidth = this.nativeHScroller.parentElement.scrollWidth;
+    this.trackHeight = this.nativeRScroller.parentElement.scrollHeight;
 
     this.nativeHScroller.style.width =
       Math.floor(this.trackWidth * 100 / this.tableScrollWidth) + '%';
     this.nativeRScroller.style.height =
       Math.floor(this.trackHeight * 100 / this.tableScrollHeight) + '%';
+
+    this.scrollerWidth = this.nativeHScroller.getBoundingClientRect().width;
+    this.scrollerHeight = this.nativeRScroller.getBoundingClientRect().height;
   }
 }
 
