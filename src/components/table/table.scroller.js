@@ -16,6 +16,30 @@ export class ScrollController {
     this.refresh();
   }
 
+  /**
+   * Функция используемая для соответсвия количества
+   * пикселей на скроллбаре и таблице.
+   * @param x пиксели на скроллбаре.
+   * @param tableLength полная длинна таблицы.
+   * @param trackLength длинна скроллбара.
+   * @returns {number} соответсвующее числу x количество пикселей на таблице.
+   */
+  TrackPxToTablePx(x, tableLength, trackLength) {
+    return x * tableLength / trackLength;
+  }
+
+  /**
+   * Функция используемая для соответсвия количества
+   * пикселей на скроллбаре и таблице.
+   * @param x пиксели на таблице.
+   * @param tableLength полная длинна таблицы.
+   * @param trackLength длинна скроллбара.
+   * @returns {number} соответсвующее числу x количество пикселей на скроллбаре.
+   */
+  TablePxToTrackPx(x, tableLength, trackLength) {
+    return x * trackLength / tableLength;
+  }
+
   scrollHandler(event, $target) {
     this.refresh();
     const isHorizontal = $target.dataset['scroller'] === 'horizontal';
@@ -134,6 +158,10 @@ export class ScrollController {
       }
       return tableLength - accum;
     };
+
+    /* document.querySelector('.excel__table .container').style.height =
+      document.querySelector('.excel__table')
+          .getBoundingClientRect().height + 'px'; */
 
     ({
       width: this.tableWidth,

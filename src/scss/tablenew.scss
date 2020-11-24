@@ -3,10 +3,12 @@
 
 .excel__table {
   user-select: none;
+  flex: 1 1 auto;
+  overflow: hidden;
 
   .container {
     display: flex;
-    height: 500px;
+    height: 100%;
 
     .filler {
       &[data-filler=horizontal] {
