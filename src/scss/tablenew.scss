@@ -38,7 +38,7 @@
     }
 
     .SWPlug, .scrollBottom, .SEPlug {
-      flex: 0 0 12px;
+      flex: 0 0 $bottom-line-size;
     }
 
     .left {
@@ -50,7 +50,7 @@
     }
 
     .right {
-      flex: 0 0 12px;
+      flex: 0 0 $right-line-size;
     }
 
     .NWPlug {
@@ -148,18 +148,38 @@
       border: 1px solid $cell-border-color;
       border-top: none;
       border-bottom: none;
-      padding: 0 1px;
+      display: flex;
+      flex-direction: column;
 
-      .verticalScroller {
-        display: block;
-        position: relative;
-        width: 100%;
-        height: 100%;
-        border-radius: 6px;
-        background: $cell-border-color;
+      .scrollContainer {
+        flex: 1 1 auto;
+        padding: 0 1px;
+        .verticalScroller {
+          display: block;
+          position: relative;
+          width: 100%;
+          height: 100%;
+          border-radius: 6px;
+          background: $cell-border-color;
 
+          &:hover {
+            background: $column-border-color;
+          }
+        }
+      }
+
+      .material-icons {
+        flex: 0 0 auto;
+        font-size: 14px;
+        height: 20px;
+        border-top: 1px solid $cell-border-color;
+        width: $right-line-size - 2px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         &:hover {
-          background: $column-border-color;
+          cursor: pointer;
+          background: $table-background-color;
         }
       }
     }
@@ -174,16 +194,37 @@
       background: white;
       border-left: none;
       border-right: none;
-      padding: 1px 0;
-      .horizontalScroller {
-        display: block;
-        position: relative;
-        height: 100%;
-        border-radius: 6px;
-        background: $cell-border-color;
+      display: flex;
+      justify-content: right;
 
+      .scrollContainer {
+        flex: 1 1 auto;
+        padding: 1px 0;
+        .horizontalScroller {
+          display: block;
+          position: relative;
+          height: 100%;
+          border-radius: 6px;
+          background: $cell-border-color;
+
+          &:hover {
+            background: $column-border-color;
+          }
+        }
+      }
+
+      .material-icons {
+        flex: 0 0 auto;
+        font-size: 14px;
+        width: 20px;
+        border-left: 1px solid $cell-border-color;
+        height: $bottom-line-size - 2px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         &:hover {
-          background: $column-border-color;
+          cursor: pointer;
+          background: $table-background-color;
         }
       }
     }

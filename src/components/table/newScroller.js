@@ -96,6 +96,7 @@ export class NewScroller {
   }
 
   changeCurrent(differ) {
+    console.log('changeCurrent');
     if (0 <= this.currentIndex + differ && this.currentIndex + differ <= this.indexOfLastInView) {
       console.log('changeCurrent');
       this.currentIndex += differ;
@@ -191,7 +192,7 @@ export class NewScroller {
     this.nativeScroller.style[this.propNames.rectLength] =
       tableViewLength * 100 / this.tableLength + '%';
 
-    this.setViewIndex(this.currentIndex);
-    this.setViewIndent(this.currentIndent);
+    this.currentIndent =
+      this.tablePxToTrackPx(this.sumsArray.sumBefore(this.currentIndex));
   }
 }

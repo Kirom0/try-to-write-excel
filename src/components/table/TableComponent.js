@@ -87,19 +87,31 @@ export class TableComponent extends ExcelComponent {
     console.log('mousedown', event);
     // eslint-disable-next-line no-unused-vars
     const $target = $(event.target);
+    console.log($target, $target.nativeEl.id === 'scroll_right');
     if (shouldResize(event)) {
       resizeHandler(this, event);
     } else if (shouldSelect(event)) {
       selectorHandler(this, event);
-    } else if ($target.classList.contains('NWPlug')) {
-      this.HScroller.changeCurrent(-1);
-    } else if ($target.classList.contains('NEPlug')) {
-      this.HScroller.changeCurrent(1);
+    } else if ($target.nativeEl.id === 'scroll') {
+      // eslint-disable-next-line no-debugger
+      // debugger;
+      switch ($target.dataset['scroll']) {
+        case 'left':
+          this.HScroller.changeCurrent(-1);
+          break;
+        case 'right':
+          this.HScroller.changeCurrent(1);
+          break;
+        case 'up':
+          this.VScroller.changeCurrent(-1);
+          break;
+        case 'down':
+          this.VScroller.changeCurrent(1);
+          break;
+      }
     } else if ($target.classList.contains('horizontalScroller')) {
-      // this.HScroller.refresh();
       this.HScroller.handler(event);
     } else if ($target.classList.contains('verticalScroller')) {
-      // this.VScroller.refresh();
       this.VScroller.handler(event);
     }
 

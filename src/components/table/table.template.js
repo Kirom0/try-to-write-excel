@@ -287,9 +287,9 @@ export function getPureHtml() {
             </div>
             <div class="cells">
               <div class="cell" contenteditable>A2</div>
-              <div class="cell" contenteditable>B2</div>
+              <div class="cell selected" contenteditable>B2</div>
               <div class="cell" contenteditable>C2</div>
-              <div class="cell selected" contenteditable>D2</div>
+              <div class="cell" contenteditable>D2</div>
               <div class="cell" contenteditable>E2</div>
               <div class="cell" contenteditable>F2</div>
               <div class="cell" contenteditable>G2</div>
@@ -304,9 +304,9 @@ export function getPureHtml() {
               <div class="filler" data-filler="horizontal"></div>
             </div>
             <div class="cells">
-              <div class="cell selected" contenteditable>A3</div>
+              <div class="cell" contenteditable>A3</div>
               <div class="cell" contenteditable>B3</div>
-              <div class="cell" contenteditable>C3</div>
+              <div class="cell selected" contenteditable>C3</div>
               <div class="cell" contenteditable>D3</div>
               <div class="cell" contenteditable>E3</div>
               <div class="cell" contenteditable>F3</div>
@@ -322,10 +322,10 @@ export function getPureHtml() {
               <div class="filler" data-filler="horizontal"></div>
             </div>
             <div class="cells">
-              <div class="cell selected" contenteditable>A4</div>
+              <div class="cell" contenteditable>A4</div>
               <div class="cell" contenteditable>B4</div>
               <div class="cell" contenteditable>C4</div>
-              <div class="cell" contenteditable>D4</div>
+              <div class="cell selected" contenteditable>D4</div>
               <div class="cell" contenteditable>E4</div>
               <div class="cell" contenteditable>F4</div>
               <div class="cell" contenteditable>G4</div>
@@ -340,11 +340,11 @@ export function getPureHtml() {
               <div class="filler" data-filler="horizontal"></div>
             </div>
             <div class="cells">
-              <div class="cell selected" contenteditable>A5</div>
+              <div class="cell" contenteditable>A5</div>
               <div class="cell" contenteditable>B5</div>
               <div class="cell" contenteditable>C5</div>
               <div class="cell" contenteditable>D5</div>
-              <div class="cell" contenteditable>E5</div>
+              <div class="cell selected" contenteditable>E5</div>
               <div class="cell" contenteditable>F5</div>
               <div class="cell" contenteditable>G5</div>
               <div class="cell" contenteditable>H5</div>
@@ -358,12 +358,12 @@ export function getPureHtml() {
               <div class="filler" data-filler="horizontal"></div>
             </div>
             <div class="cells">
-              <div class="cell selected" contenteditable>A6</div>
+              <div class="cell" contenteditable>A6</div>
               <div class="cell" contenteditable>B6</div>
               <div class="cell" contenteditable>C6</div>
               <div class="cell" contenteditable>D6</div>
               <div class="cell" contenteditable>E6</div>
-              <div class="cell" contenteditable>F6</div>
+              <div class="cell selected" contenteditable>F6</div>
               <div class="cell" contenteditable>G6</div>
               <div class="cell" contenteditable>H6</div>
               <div class="cell" contenteditable>I6</div>
@@ -376,13 +376,13 @@ export function getPureHtml() {
               <div class="filler" data-filler="horizontal"></div>
             </div>
             <div class="cells">
-              <div class="cell selected" contenteditable>A7</div>
+              <div class="cell" contenteditable>A7</div>
               <div class="cell" contenteditable>B7</div>
               <div class="cell" contenteditable>C7</div>
               <div class="cell" contenteditable>D7</div>
               <div class="cell" contenteditable>E7</div>
               <div class="cell" contenteditable>F7</div>
-              <div class="cell" contenteditable>G7</div>
+              <div class="cell selected" contenteditable>G7</div>
               <div class="cell" contenteditable>H7</div>
               <div class="cell" contenteditable>I7</div>
               <div class="cell" contenteditable>J7</div>
@@ -394,14 +394,14 @@ export function getPureHtml() {
               <div class="filler" data-filler="horizontal"></div>
             </div>
             <div class="cells">
-              <div class="cell selected" contenteditable>A8</div>
+              <div class="cell" contenteditable>A8</div>
               <div class="cell" contenteditable>B8</div>
               <div class="cell" contenteditable>C8</div>
               <div class="cell" contenteditable>D8</div>
               <div class="cell" contenteditable>E8</div>
               <div class="cell" contenteditable>F8</div>
               <div class="cell" contenteditable>G8</div>
-              <div class="cell" contenteditable>H8</div>
+              <div class="cell selected" contenteditable>H8</div>
               <div class="cell" contenteditable>I8</div>
               <div class="cell" contenteditable>J8</div>
               <div class="cell" contenteditable>K8</div>
@@ -412,7 +412,7 @@ export function getPureHtml() {
               <div class="filler" data-filler="horizontal"></div>
             </div>
             <div class="cells">
-              <div class="cell selected" contenteditable>A9</div>
+              <div class="cell" contenteditable>A9</div>
               <div class="cell" contenteditable>B9</div>
               <div class="cell" contenteditable>C9</div>
               <div class="cell" contenteditable>D9</div>
@@ -420,7 +420,7 @@ export function getPureHtml() {
               <div class="cell" contenteditable>F9</div>
               <div class="cell" contenteditable>G9</div>
               <div class="cell" contenteditable>H9</div>
-              <div class="cell" contenteditable>I9</div>
+              <div class="cell selected" contenteditable>I9</div>
               <div class="cell" contenteditable>J9</div>
               <div class="cell" contenteditable>K9</div>
               <div class="cell" contenteditable>L9</div>
@@ -432,22 +432,30 @@ export function getPureHtml() {
             <div class="filler" data-filler="vertical"></div>
           </div>
         </div>
-        <div class="scrollBottom" data-type="scroller-container">
-          <span
-            class="horizontalScroller"
-            data-type="scroller"
-            data-scroller="horizontal"
-          ></span>
+        <div class="scrollBottom">
+          <div class="scrollContainer" data-type="scroller-container">
+            <span
+              class="horizontalScroller"
+              data-type="scroller"
+              data-scroller="horizontal"
+            ></span>
+          </div>
+          <span class="material-icons" id="scroll" data-scroll="left">keyboard_arrow_left</span>
+          <span class="material-icons" id="scroll" data-scroll="right">keyboard_arrow_right</span>
          </div>  
       </div>
       <div class="right">
         <div class="NEPlug"></div>
         <div class="scrollRight">
-            <span
-              class="verticalScroller"
-              data-type="scroller"
-              data-scroller="vertical"
-            ></span>
+            <div class="scrollContainer">
+              <span
+                class="verticalScroller"
+                data-type="scroller"
+                data-scroller="vertical"
+              ></span>
+            </div>
+            <span class="material-icons" id="scroll" data-scroll="up">keyboard_arrow_up</span>
+            <span class="material-icons" id="scroll" data-scroll="down">keyboard_arrow_down</span>
         </div>
         <div class="SEPlug"></div>
       </div>
