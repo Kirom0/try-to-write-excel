@@ -9,18 +9,19 @@ export function resizeHandler(context, event) {
       event.pageY;
 
   const mousemove = (event) => {
+    console.log('mousemove');
     const cssSelector =
       `[data-resizer="${type}s"]`;
 
     if (type === 'column') {
-      context.css.addRules({
+      context.cssRules.addRules({
         [cssSelector]: {
           left: event.pageX + 'px !important',
           display: 'block !important',
         },
       });
     } else {
-      context.css.addRules({
+      context.cssRules.addRules({
         [cssSelector]: {
           top: event.pageY -
             context.$root.getBoundingClientRect().top +
@@ -41,26 +42,33 @@ export function resizeHandler(context, event) {
         event.pageY - startPosition;
     const DOMRect = $element.getBoundingClientRect();
     const cssSelector =
-      `[data-${type}-title="${
-        $element.getAttribute(`data-${type}-title`)
+      `[data-${type}="${
+        $element.getAttribute(`data-${type}`)
       }"]`;
 
     if (type === 'column') {
-      context.css.addRules({
+      context.cssRules.addRules({
         [cssSelector]: {
           width: (DOMRect.width + delta) + 'px !important',
         },
       });
     } else {
-      context.css.addRules({
+      context.cssRules.addRules({
         [cssSelector]: {
           height: (DOMRect.height + delta) + 'px !important',
         },
       });
     }
-    context.css.deleteSelectorsRules(`[data-resizer="${type}s"]`);
+    context.cssRules.deleteSelectorsRules(`[data-resizer="${type}s"]`);
   };
 
   context.addGlobalListener('mousemove', mousemove);
   context.addGlobalListener('mouseup', mouseup);
+}
+
+export function shouldResize(event) {
+  return (
+    event.target.dataset['resizer'] === 'column' ||
+    event.target.dataset['resizer'] === 'row'
+  );
 }

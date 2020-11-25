@@ -6,6 +6,7 @@
   align-items: center;
   height: $toolbar-height;
   //box-shadow: 0px -5px 10px black;
+  flex: 0 0 auto;
 
   .button {
     @include button($gray-back);

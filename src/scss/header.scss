@@ -8,6 +8,8 @@
   align-items: center;
   padding: 0 6px;
 
+  flex: 0 0 auto;
+
   input {
     height: 20px;
     line-height: 22px;
@@ -32,17 +34,6 @@
       @include button($gray-back);
     }
   }
-}
-
-.excel__header__ghost {
-  height: $header-height;
-}
-
-.excel__header__container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
 }
 
 .box-shadow {

@@ -1,0 +1,286 @@
+@import "variables";
+@import "mixins";
+
+.excel__table {
+  user-select: none;
+  flex: 1 1 auto;
+  overflow: hidden;
+
+  .container {
+    display: flex;
+    height: 100%;
+
+    .filler {
+      &[data-filler=horizontal] {
+        height: 100%;
+      }
+      &[data-filler=vertical] {
+        width: 100%;
+      }
+    }
+
+    .NWPlug, .rowsHeadline, .NEPlug, .columnsHeadline, .table, .scrollRight, .SWPlug, .scrollBottom, .SEPlug {
+      border: 1px solid black;
+      width: 100%;
+    }
+
+    .left, .middle, .right {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .NWPlug, .columnsHeadline, .NEPlug {
+      flex: 0 0 $standart-cell-height;
+    }
+
+    .rowsHeadline, .table, .scrollRight {
+      flex-grow: 1;
+    }
+
+    .SWPlug, .scrollBottom, .SEPlug {
+      flex: 0 0 $bottom-line-size;
+    }
+
+    .left {
+      flex: 0 0 80px;
+    }
+
+    .middle {
+      flex-grow: 1;
+    }
+
+    .right {
+      flex: 0 0 $right-line-size;
+    }
+
+    .NWPlug {
+      background: $table-background-color;
+      border: 3px solid $column-border-color;
+      border-top: 1px solid $column-border-color;
+      border-left: 1px solid $column-border-color;
+    }
+
+    .columnsHeadline {
+      background: $table-background-color;
+      overflow: hidden;
+      border: none;
+
+      .columns {
+        display: flex;
+        justify-content: left;
+        height: 100%;
+        .column {
+          position: relative;
+          flex: 0 0 $standart-cell-width;
+          background: $table-background-color;
+          height: 100%;
+          border: 1px solid $column-border-color;
+          border-left: none;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          .column__resizer {
+            position: absolute;
+            height: 100%;
+            right: -1px;
+            width: 3px;
+            background: $select-color;
+            z-index: 100;
+            opacity: 0;
+            &:hover {
+              cursor: col-resize;
+              opacity: 1;
+            }
+          }
+        }
+      }
+    }
+
+    .NEPlug {
+      border: 1px solid $cell-border-color;
+      background: $table-background-color;
+    }
+
+    .rowsHeadline {
+      border: none;
+      background: $table-background-color;
+      overflow: hidden;
+      .rows {
+        display: flex;
+        flex-direction: column;
+        justify-content: left;
+        flex-wrap: nowrap;
+        .row {
+          position: relative;
+          flex: 0 0 $standart-cell-height;
+          border: 1px solid $column-border-color;
+          border-top: none;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          .row__resizer {
+            position: absolute;
+            width: 100%;
+            bottom: -1px;
+            height: 3px;
+            background: $select-color;
+            opacity: 0;
+            z-index: 100;
+            &:hover {
+              cursor: row-resize;
+              opacity: 1;
+            }
+          }
+        }
+      }
+    }
+
+    .table {
+      position: relative;
+      background: $table-background-color;
+      border: none;
+      overflow: hidden;
+
+      .rows {
+        display: flex;
+        flex-direction: column;
+        justify-content: left;
+        flex-wrap: nowrap;
+      }
+
+      .rows__resizer {
+        position: absolute;
+        height: 3px;
+        background: $select-color;
+        width: 100vw;
+        top: 0px;
+        display: none;
+      }
+
+      .columns__resizer {
+        position: absolute;
+        height: 100vh;
+        background: $select-color;
+        width: 3px;
+        top: 0px;
+        left: 0px;
+        display: none;
+      }
+
+      .cells {
+        height: $standart-cell-height;
+        display: flex;
+        justify-content: left;
+        flex-wrap: nowrap;
+
+        .cell {
+          flex: 0 0 $standart-cell-width;
+          height: 100%;
+          background: white;
+          border: 1px solid $cell-border-color;
+          border-left: none;
+          border-top: none;
+          display: flex;
+          align-items: center;
+          padding: 2px;
+          cursor: default;
+          overflow: hidden;
+
+          &.selected {
+            border: 2px solid #1a73e8;
+          }
+        }
+      }
+    }
+
+    .scrollRight {
+      border: 1px solid $cell-border-color;
+      border-top: none;
+      border-bottom: none;
+      display: flex;
+      flex-direction: column;
+
+      .scrollContainer {
+        flex: 1 1 auto;
+        padding: 0 1px;
+        .verticalScroller {
+          display: block;
+          position: relative;
+          width: 100%;
+          height: 100%;
+          border-radius: 6px;
+          background: $cell-border-color;
+
+          &:hover {
+            background: $column-border-color;
+          }
+        }
+      }
+
+      .material-icons {
+        flex: 0 0 auto;
+        font-size: 14px;
+        height: 20px;
+        border-top: 1px solid $cell-border-color;
+        width: $right-line-size - 2px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &:hover {
+          cursor: pointer;
+          background: $table-background-color;
+        }
+      }
+    }
+
+    .SWPlug {
+      border: 1px solid $column-border-color;
+      background: $table-background-color;
+    }
+
+    .scrollBottom {
+      border: 1px solid $cell-border-color;
+      background: white;
+      border-left: none;
+      border-right: none;
+      display: flex;
+      justify-content: right;
+
+      .scrollContainer {
+        flex: 1 1 auto;
+        padding: 1px 0;
+        .horizontalScroller {
+          display: block;
+          position: relative;
+          height: 100%;
+          border-radius: 6px;
+          background: $cell-border-color;
+
+          &:hover {
+            background: $column-border-color;
+          }
+        }
+      }
+
+      .material-icons {
+        flex: 0 0 auto;
+        font-size: 14px;
+        width: 20px;
+        border-left: 1px solid $cell-border-color;
+        height: $bottom-line-size - 2px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &:hover {
+          cursor: pointer;
+          background: $table-background-color;
+        }
+      }
+    }
+
+    .SEPlug {
+      background: white;
+      border: 1px solid $cell-border-color;
+    }
+  }
+}

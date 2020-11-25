@@ -8,6 +8,8 @@
   align-items: center;
   box-shadow: 0 -5px 10px -10px black inset;
 
+  flex: 0 0 auto;
+
   .fx {
     font-style: italic;
     color: $gray-back;

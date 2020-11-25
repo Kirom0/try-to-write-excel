@@ -8,7 +8,9 @@
   "rules": {
     "linebreak-style": "off",
     "require-jsdoc": "off",
-    "quote-props": "off"
+    "quote-props": "off",
+    "valid-jsdoc": "off",
+    "max-len": "off"
   },
   "extends": ["eslint:recommended", "google"]
 }
