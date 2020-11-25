@@ -22,6 +22,7 @@ export class SumsArray {
           }
           target.#array[prop] = value;
           target.callListeners();
+          return true;
         }
       },
       get(target, prop) {
@@ -43,7 +44,11 @@ export class SumsArray {
   }
 
   callListeners() {
-    this.#listeners.forEach((listener) => listener());
+    (new Promise((resolve, reject) => {
+      resolve();
+    })).then(()=>{
+      this.#listeners.forEach((listener) => listener());
+    });
   }
 
   addListener(listener) {

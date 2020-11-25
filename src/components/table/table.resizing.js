@@ -65,3 +65,10 @@ export function resizeHandler(context, event) {
   context.addGlobalListener('mousemove', mousemove);
   context.addGlobalListener('mouseup', mouseup);
 }
+
+export function shouldResize(event) {
+  return (
+    event.target.dataset['resizer'] === 'column' ||
+    event.target.dataset['resizer'] === 'row'
+  );
+}

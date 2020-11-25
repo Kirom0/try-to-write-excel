@@ -70,6 +70,7 @@
         justify-content: left;
         height: 100%;
         .column {
+          position: relative;
           flex: 0 0 $standart-cell-width;
           background: $table-background-color;
           height: 100%;
@@ -78,6 +79,19 @@
           display: flex;
           justify-content: center;
           align-items: center;
+          .column__resizer {
+            position: absolute;
+            height: 100%;
+            right: -1px;
+            width: 3px;
+            background: $select-color;
+            z-index: 100;
+            opacity: 0;
+            &:hover {
+              cursor: col-resize;
+              opacity: 1;
+            }
+          }
         }
       }
     }
@@ -97,17 +111,32 @@
         justify-content: left;
         flex-wrap: nowrap;
         .row {
+          position: relative;
           flex: 0 0 $standart-cell-height;
           border: 1px solid $column-border-color;
           border-top: none;
           display: flex;
           justify-content: center;
           align-items: center;
+          .row__resizer {
+            position: absolute;
+            width: 100%;
+            bottom: -1px;
+            height: 3px;
+            background: $select-color;
+            opacity: 0;
+            z-index: 100;
+            &:hover {
+              cursor: row-resize;
+              opacity: 1;
+            }
+          }
         }
       }
     }
 
     .table {
+      position: relative;
       background: $table-background-color;
       border: none;
       overflow: hidden;
@@ -117,6 +146,25 @@
         flex-direction: column;
         justify-content: left;
         flex-wrap: nowrap;
+      }
+
+      .rows__resizer {
+        position: absolute;
+        height: 3px;
+        background: $select-color;
+        width: 100vw;
+        top: 0px;
+        display: none;
+      }
+
+      .columns__resizer {
+        position: absolute;
+        height: 100vh;
+        background: $select-color;
+        width: 3px;
+        top: 0px;
+        left: 0px;
+        display: none;
       }
 
       .cells {
@@ -136,6 +184,7 @@
           align-items: center;
           padding: 2px;
           cursor: default;
+          overflow: hidden;
 
           &.selected {
             border: 2px solid #1a73e8;
