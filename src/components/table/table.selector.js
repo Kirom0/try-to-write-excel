@@ -8,6 +8,38 @@ export class Selector {
     this.colSizes = colSizes;
 
     this.prepare();
+
+    Object.defineProperties(this, {
+      curRow: {
+        set(value) {
+          this._curRow = value;
+          this._curId =
+            '' + value + this._curId.slice(this._curId.indexOf(':'));
+        },
+        get() {
+          return this._curRow;
+        },
+      },
+      curCol: {
+        set(value) {
+          this._curCol = value;
+          this._curId =
+            this._curId.substr(0, this._curId.indexOf(':') + 1) + value;
+        },
+        get() {
+          return this._curCol;
+        },
+      },
+      curId: {
+        set(value) {
+          [this._curRow, this._curCol] = parseId(value);
+          this._curId = value;
+        },
+        get() {
+          return this._curId;
+        },
+      },
+    });
   }
 
   prepare() {
@@ -17,8 +49,13 @@ export class Selector {
 
   init($table, cells) {
     this.cells = cells;
+    this.$table = $table;
     this.groupSelector.init($table);
-    this.select(0, 0);
+
+    this.tableRect = $table.getBoundingClientRect();
+
+    this.curId = '0:0';
+    this.focus();
   }
 
   select(row, col) {
@@ -51,40 +88,106 @@ export class Selector {
     this.selected = [];
   }
 
-  handler(event) {
+  focus() {
+    this.clear();
+    this.select(this.curRow, this.curCol);
+    this.cells[this.curRow][this.curCol].elem.nativeEl.focus({preventScroll: true});
+  }
+
+  mouseDownHandler(event) {
     const $target = $(event.target);
-    const [beginRow, beginCol] =parseId($target.dataset.id);
-    let lastTargetId = $target.dataset['coordinates'];
+    let lastTargetId = $target.dataset.id;
+
+    if (event.shiftKey) {
+      const [bRow, bCol] = parseId(lastTargetId);
+      const [row, col] = parseId(this.curId);
+      this.selectGroup(bRow, bCol, row, col);
+      return;
+    }
+    const [beginRow, beginCol] = parseId(lastTargetId);
     let [lastRow, lastCol] = [beginRow, beginCol];
-    console.log(beginRow, beginCol);
+
     this.table.selector.select(beginRow, beginCol);
+    this.curId = lastTargetId;
 
-    console.log(event, $target.getBoundingClientRect());
-
-    const onmousemove = (function(event) {
+    const reloadLastId = (function(event) {
       const $target = $(event.target);
+      if ($target.dataset['type'] === GroupSelector.DATATYPE) {
+        const X = (event.clientX - this.tableRect.left) + this.$table.nativeEl.scrollLeft;
+        const Y = (event.clientY - this.tableRect.top) + this.$table.nativeEl.scrollTop;
+        ([lastRow, lastCol] = [this.rowSizes.find(Y), this.colSizes.find(X)]);
+        lastTargetId = `${lastRow}:${lastCol}`;
+        return true;
+      } else
       if ($target.dataset['type'] === 'cell') {
         if ($target.dataset.id !== lastTargetId) {
           lastTargetId = $target.dataset.id;
           ([lastRow, lastCol] = parseId(lastTargetId));
-          this.groupSelector.setView(beginRow, beginCol, lastRow, lastCol);
+          return true;
         }
+      }
+      return false;
+    }).bind(this);
+
+    const onmousemove = (function(event) {
+      if (reloadLastId(event)) {
+        this.groupSelector.setView(beginRow, beginCol, lastRow, lastCol);
       }
     }).bind(this);
 
     const onmouseup = (function(event) {
-      const $target = $(event.target);
-      if ($target.dataset['type'] === 'cell') {
-        ([lastRow, lastCol] = parseId($target.dataset.id));
-      }
+      reloadLastId(event);
       this.selectGroup(beginRow, beginCol, lastRow, lastCol);
-      // this.groupSelector.disable();
+      this.groupSelector.disable();
+
       this.table.eraseGlobalListener('mousemove');
       this.table.eraseGlobalListener('mouseup');
     }).bind(this);
 
     this.table.addGlobalListener('mousemove', onmousemove);
     this.table.addGlobalListener('mouseup', onmouseup);
+  }
+
+  static keyNeedReact = ['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'Enter', 'Tab'];
+
+  keyDownHandler(event) {
+    console.log(event);
+    const {shiftKey, code} = event;
+    if (!shiftKey && Selector.keyNeedReact.includes(code)) {
+      let changed = false;
+      switch (code) {
+        case 'ArrowDown':
+        case 'Enter':
+          if (this.curRow + 1 < this.rowSizes.length) {
+            this.curRow += 1;
+            changed = true;
+          }
+          break;
+        case 'ArrowUp':
+          if (this.curRow - 1 >= 0) {
+            this.curRow -= 1;
+            changed = true;
+          }
+          break;
+        case 'ArrowLeft':
+          if (this.curCol - 1 >= 0) {
+            this.curCol -= 1;
+            changed = true;
+          }
+          break;
+        case 'ArrowRight':
+        case 'Tab':
+          if (this.curCol + 1 < this.colSizes.length) {
+            this.curCol += 1;
+            changed = true;
+          }
+          break;
+      }
+      if (changed) {
+        event.preventDefault();
+        this.focus();
+      }
+    }
   }
 }
 
@@ -93,13 +196,17 @@ export function shouldSelect(event) {
 }
 
 class GroupSelector {
+  static DATATYPE = 'groupSelector';
   constructor(rowSizes, colSizes) {
     this.rowSizes = rowSizes;
     this.colSizes = colSizes;
   }
 
   init($table) {
-    this.$selector = $.create('div', {class: 'groupSelector'});
+    this.$selector = $.create('div', {
+      class: 'groupSelector',
+      'data-type': GroupSelector.DATATYPE,
+    });
     $table.append(this.$selector);
   }
 

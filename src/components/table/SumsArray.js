@@ -43,6 +43,21 @@ export class SumsArray {
     return this.#prefSum[this.#array.length - 1];
   }
 
+  find(value) {
+    let l = -1;
+    let r = this.length - 1;
+    let mid;
+    while (l + 1 < r) {
+      mid = (l + r) >> 1;
+      if (this.#prefSum[mid] >= value) {
+        r = mid;
+      } else {
+        l = mid;
+      }
+    }
+    return r;
+  }
+
   callListeners() {
     (new Promise((resolve, reject) => {
       resolve();

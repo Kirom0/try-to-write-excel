@@ -19,7 +19,7 @@ export class TableComponent extends ExcelComponent {
   constructor($root, rows, cols) {
     super($root, {
       name: 'Table',
-      listeners: ['mousedown'],
+      listeners: ['mousedown', 'keydown'],
     });
     this.rows = rows || 10;
     this.cols = cols || 20;
@@ -112,7 +112,7 @@ export class TableComponent extends ExcelComponent {
     } else
 
     if (shouldSelect(event)) {
-      this.selector.handler(event);
+      this.selector.mouseDownHandler(event);
     } else
 
     if ($target.classList.contains('horizontalScroller')) {
@@ -137,6 +137,10 @@ export class TableComponent extends ExcelComponent {
           break;
       }
     }
+  }
+
+  onKeydown(event) {
+    this.selector.keyDownHandler(event);
   }
 
   htmlInitial() {

@@ -180,8 +180,6 @@
           border: 1px solid $cell-border-color;
           border-left: none;
           border-top: none;
-          display: flex;
-          align-items: center;
           padding: 2px;
           cursor: default;
           outline: none;
@@ -195,7 +193,7 @@
 
       .groupSelector {
         position: absolute;
-        background: rgba(100, 186, 84, .4);
+        background: rgb(99 187 252 / 0.4);
       }
     }
 
