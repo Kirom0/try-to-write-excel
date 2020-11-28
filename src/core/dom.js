@@ -1,3 +1,5 @@
+import {arrayFrom} from '@core/utils';
+
 class Dom {
   constructor(selector) {
     this.nativeEl =
@@ -40,10 +42,13 @@ class Dom {
   }
 
   append(node) {
-    if (node instanceof Dom) {
-      node = node.nativeEl;
-    }
-    this.nativeEl.append(node);
+    arrayFrom(node).forEach((nd) => {
+      if (nd instanceof Dom) {
+        nd = nd.nativeEl;
+      }
+      this.nativeEl.append(nd);
+    });
+    return this;
   }
 
   get dataset() {

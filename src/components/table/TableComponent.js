@@ -1,14 +1,12 @@
 import {ExcelComponent} from '@core/ExcelComponent';
 import {
-  cellInitial, getPureHtml,
-  getSmartTemplate,
+  cellInitial, getPureHtml, getTemplate,
 } from '@/components/table/table.template';
 import {CSSRules} from '@core/css';
 import {TableCell} from '@/components/table/table.cell';
 import {range} from '@core/utils';
 import {
   Selector,
-  selectorHandler,
   shouldSelect,
 } from '@/components/table/table.selector';
 import {$} from '@core/dom';
@@ -21,11 +19,19 @@ export class TableComponent extends ExcelComponent {
   constructor($root, rows, cols) {
     super($root, {
       name: 'Table',
-      listeners: ['mousedown'],
+      listeners: ['mousedown', 'keydown'],
     });
     this.rows = rows || 10;
     this.cols = cols || 20;
+
+    this.prepare();
+  }
+
+  prepare() {
     this.cssRules = new CSSRules();
+    this.columnSizes = new SumsArray(this.cols, 120, []);
+    this.rowSizes = new SumsArray(this.rows, 24, []);
+    this.selector = new Selector(this, this.rowSizes, this.columnSizes);
   }
 
   initCells() {
@@ -47,15 +53,13 @@ export class TableComponent extends ExcelComponent {
     // super.init();
     this.initListeners();
     this.initCells();
-    // this.htmlInitial();
-    this.toHtml();
-    this.selector = new Selector(this.cells);
-    this.selector.select(0, 0);
-    this.columnSizes = new SumsArray(4, 120, []);
+    this.htmlInitial();
+    const $table = this.$root.querySelector('.table');
+
     this.HScroller = new NewScroller(
         this,
         'OX',
-        this.$root.querySelector('.table').nativeEl,
+        $table.nativeEl,
         this.$root.querySelector('[data-type="columnsHeadline"]').nativeEl,
         this.$root.querySelector('[data-scroller="horizontal"]').nativeEl,
         this.columnSizes
@@ -63,11 +67,10 @@ export class TableComponent extends ExcelComponent {
     this.HScroller.refresh();
     this.columnSizes.addListener(this.HScroller.refresh);
 
-    this.rowSizes = new SumsArray(9, 24, []);
     this.VScroller = new NewScroller(
         this,
         'OY',
-        this.$root.querySelector('.table').nativeEl,
+        $table.nativeEl,
         this.$root.querySelector('[data-type="rowsHeadline"]').nativeEl,
         this.$root.querySelector('[data-scroller="vertical"]').nativeEl,
         this.rowSizes
@@ -78,17 +81,18 @@ export class TableComponent extends ExcelComponent {
     this.HResizer = new NewResizer(
         this,
         'OX',
-        this.$root.querySelector('.table').nativeEl,
+        $table.nativeEl,
         this.$root.querySelector('[data-resizer=columns]').nativeEl,
         this.columnSizes
     );
     this.VResizer = new NewResizer(
         this,
         'OY',
-        this.$root.querySelector('.table').nativeEl,
+        $table.nativeEl,
         this.$root.querySelector('[data-resizer=rows]').nativeEl,
         this.rowSizes
     );
+    this.selector.init($table, this.cells);
 
     window.onresize = () => {
       this.HScroller.refresh();
@@ -108,7 +112,7 @@ export class TableComponent extends ExcelComponent {
     } else
 
     if (shouldSelect(event)) {
-      selectorHandler(this, event);
+      this.selector.mouseDownHandler(event);
     } else
 
     if ($target.classList.contains('horizontalScroller')) {
@@ -135,15 +139,17 @@ export class TableComponent extends ExcelComponent {
     }
   }
 
+  onKeydown(event) {
+    this.selector.keyDownHandler(event);
+  }
+
   htmlInitial() {
     console.log(this.cells);
-    getSmartTemplate(this.cells, this.rows, this.cols)
-        .forEach(($el) => this.$root.append($el));
+    this.$root.append(getTemplate(this.cells, this.rows, this.cols));
   }
 
   toHtml() {
     console.log(this.rows, this.cols);
-    // return getTemplate(this.rows, this.cols);
     this.$root.html = getPureHtml();
   }
 }

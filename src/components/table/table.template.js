@@ -1,146 +1,111 @@
 import {$} from '@core/dom';
 import {range} from '@core/utils';
 
-export function getTemplate(rows, columns) {
-  return createHeadline({
-    postfix: '__main',
-    childClass: 'column',
-    childValues: range(columns).map(getLitterByNumber),
-  }).html +
-    range(rows).map(
-        (row) => createRow({
-          infoValue: row + 1,
-          childClass: 'cell',
-          childValues: range(columns).map((item) => ''),
-        })
-    ).join('') +
-    $.create('div', {
-      class: 'rows__resizer',
-      'data-resizer': 'rows',
-    }).html;
-}
+export function getTemplate(cells, rows, cols) {
+  const $container = $.create('div', {
+    class: 'container',
+  });
+  $container.append($.create('div'));
 
-function createRow(options) {
-  const {
-    infoValue = '',
-    postfix = '',
-    childClass = '',
-    childValues = [],
-  } = options;
-
-  const $el = $.create('div', {class: 'row' + postfix});
-  $el.append(
-      $.create('div', {
-        class: childClass + '__info',
-        'data-type': 'resizable',
-        'data-row-title': infoValue,
-      }).setHtml(infoValue +
-        $.create('div', {
-          class: 'row__resizer',
-          'data-resizer': 'row',
-        }).html
+  const $left = $.create('div', {
+    class: 'left',
+  })
+      .append($.create('div', {class: 'NWPlug'}))
+      .append($.create('div', {class: 'rowsHeadline', 'data-type': 'rowsHeadline'})
+          .append($.create('div', {class: 'rows'})
+              .append(range(rows)
+                  .map((row) =>
+                    $.create('div', {
+                      class: 'row',
+                      'data-type': 'resizable',
+                      'data-row-title': '' + row,
+                    })
+                        .setHtml('' + (row + 1))
+                        .append($.create('div', {class: 'row__resizer', 'data-resizer': 'row'}))
+                  )
+              )
+              .append($.create('div', {class: 'filler', 'data-filler': 'vertical'}))
+          )
       )
-  );
-  $el.append(
-      $.create('div', {class: childClass + 's'})
-          .setHtml(
-              childValues.map((child, index)=>
-                $.create('div', {
-                  class: childClass,
-                  contenteditable: '' + (childClass === 'cell'),
-                  'data-column-title': getLitterByNumber(index),
-                  'data-row-title': infoValue,
-                })
-                    .setHtml(child).html
-              ).join('')
+      .append($.create('div', {class: 'SWPlug'}));
+
+  const $middle = $.create('div', {
+    class: 'middle',
+  })
+      .append($.create('div', {class: 'columnsHeadline', 'data-type': 'columnsHeadline'})
+          .append($.create('div', {class: 'columns'})
+              .append(range(cols)
+                  .map((col) =>
+                    $.create('div', {class: 'column', 'data-type': 'resizable', 'data-column-title': '' + col})
+                        .setHtml(getLitterByNumber(col))
+                        .append($.create('div', {class: 'column__resizer', 'data-resizer': 'column'}))
+                  )
+              )
+              .append($.create('div', {class: 'filler', 'data-filler': 'horizontal'}))
           )
-  );
-
-  return $el.html;
-}
-
-export function getSmartTemplate(cells, rows, columns) {
-  const $elems = [];
-  $elems.push(createHeadline({
-    postfix: '__main',
-    childClass: 'column',
-    childValues: range(columns),
-  }));
-  range(rows).map((index) => {
-    const $el = $.create('div', {class: 'row'});
-    $el.append(
-        $.create('div', {
-          class: 'cell__info',
-          'data-type': 'resizable',
-          'data-row': index,
-        }).setHtml(index +
-          $.create('div', {
-            class: 'row__resizer',
-            'data-resizer': 'row',
-          }).html
-        )
-    );
-
-    const $cellsContainer = $.create('div', {class: 'cells'});
-    for (let i = 0; i < columns; i++) {
-      $cellsContainer.append(cells[index][i].elem);
-    }
-
-    $el.append($cellsContainer);
-    return $el;
-  }).forEach(($el) => $elems.push($el));
-
-  $elems.push($.create('div', {
-    class: 'rows__resizer',
-    'data-resizer': 'rows',
-  }));
-
-  return $elems;
-}
-
-function createHeadline(options) {
-  const {
-    infoValue = '',
-    postfix = '',
-    childClass = '',
-    childValues = [],
-  } = options;
-
-  const $el = $.create('div', {class: 'row' + postfix});
-  $el.append(
-      $.create('div', {class: childClass + '__info'})
-          .setHtml(infoValue)
-  );
-  const resizer = $.create('div', {
-    class: childClass + '__resizer',
-    'data-resizer': 'column',
-  }).html;
-  $el.append(
-      $.create('div', {class: childClass + 's'})
-          .setHtml(
-              childValues.map((child, index)=>
-                $.create('div', {
-                  class: childClass,
-                  'data-type': 'resizable',
-                  'data-column': '' + child,
-                })
-                    .setHtml(getLitterByNumber(child) + resizer).html
-              ).join('') +
-              $.create('div', {
-                class: 'columns__resizer',
-                'data-resizer': 'columns',
-              }).html
+      )
+      .append($.create('div', {class: 'table'})
+          .append($.create('div', {class: 'rows'})
+              .append(range(rows)
+                  .map((row) =>
+                    $.create('div', {class: 'cells', 'data-row-title': '' + row})
+                        .append(range(cols)
+                            .map((col) =>
+                              cells[row][col].elem
+                            )
+                        )
+                        .append($.create('div', {class: 'filler', 'data-filler': 'horizontal'}))
+                  )
+              )
+              .append($.create('div', {class: 'filler', 'data-filler': 'vertical'}))
           )
-  );
-
-  return $el;
+          .append($.create('div', {class: 'columns__resizer', 'data-resizer': 'columns'}))
+          .append($.create('div', {class: 'rows__resizer', 'data-resizer': 'rows'}))
+      )
+      .append($.create('div', {class: 'scrollBottom'})
+          .append($.create('div', {class: 'scrollContainer', 'data-type': 'scroller-container'})
+              .append($.create('span', {
+                class: 'horizontalScroller',
+                'data-type': 'scroller',
+                'data-scroller': 'horizontal',
+              }))
+          )
+          .append($.create('span', {class: 'material-icons', id: 'scroll', 'data-scroll': 'left'})
+              .setHtml('keyboard_arrow_left')
+          )
+          .append($.create('span', {class: 'material-icons', id: 'scroll', 'data-scroll': 'right'})
+              .setHtml('keyboard_arrow_right')
+          )
+      );
+  const $right = $.create('div', {class: 'right'})
+      .append($.create('div', {class: 'NEPlug'}))
+      .append($.create('div', {class: 'scrollRight'})
+          .append($.create('div', {class: 'scrollContainer'})
+              .append($.create('span', {
+                class: 'verticalScroller',
+                'data-type': 'scroller',
+                'data-scroller': 'vertical',
+              }))
+          )
+          .append($.create('span', {class: 'material-icons', id: 'scroll', 'data-scroll': 'up'})
+              .setHtml('keyboard_arrow_up')
+          )
+          .append($.create('span', {class: 'material-icons', id: 'scroll', 'data-scroll': 'down'})
+              .setHtml('keyboard_arrow_down')
+          )
+      )
+      .append($.create('div', {class: 'SEPlug'}));
+  return $container
+      .append($left)
+      .append($middle)
+      .append($right);
 }
 
 export function cellInitial(row, col) {
   return $.create('div', {
     class: 'cell',
-    'data-column': '' + col,
-    'data-row': '' + row,
+    'data-id': `${row}:${col}`,
+    'data-column-title': '' + col,
     'data-type': 'cell',
     contenteditable: true,
   });
