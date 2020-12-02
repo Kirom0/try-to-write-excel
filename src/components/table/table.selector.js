@@ -15,6 +15,7 @@ export class Selector {
           this._curRow = value;
           this._curId =
             '' + value + this._curId.slice(this._curId.indexOf(':'));
+          this.$emit('table:selector:switched', this.curCell.value);
         },
         get() {
           return this._curRow;
@@ -25,6 +26,7 @@ export class Selector {
           this._curCol = value;
           this._curId =
             this._curId.substr(0, this._curId.indexOf(':') + 1) + value;
+          this.$emit('table:selector:switched', this.curCell.value);
         },
         get() {
           return this._curCol;
@@ -34,6 +36,7 @@ export class Selector {
         set(value) {
           [this._curRow, this._curCol] = parseId(value);
           this._curId = value;
+          this.$emit('table:selector:switched', this.curCell.value);
         },
         get() {
           return this._curId;
@@ -45,6 +48,7 @@ export class Selector {
   prepare() {
     this.selected = [];
     this.groupSelector = new GroupSelector(this.rowSizes, this.colSizes);
+    this.$emit = this.table.emitter.emit;
   }
 
   init($table, cells) {
@@ -56,6 +60,10 @@ export class Selector {
 
     this.curId = '0:0';
     this.focus();
+  }
+
+  get curCell() {
+    return this.cells[this.curRow][this.curCol];
   }
 
   select(row, col) {
@@ -158,36 +166,60 @@ export class Selector {
       switch (code) {
         case 'ArrowDown':
         case 'Enter':
-          if (this.curRow + 1 < this.rowSizes.length) {
-            this.curRow += 1;
-            changed = true;
-          }
+          changed = this.move.down();
           break;
         case 'ArrowUp':
-          if (this.curRow - 1 >= 0) {
-            this.curRow -= 1;
-            changed = true;
-          }
+          changed = this.move.up();
           break;
         case 'ArrowLeft':
-          if (this.curCol - 1 >= 0) {
-            this.curCol -= 1;
-            changed = true;
-          }
+          changed = this.move.left();
           break;
         case 'ArrowRight':
         case 'Tab':
-          if (this.curCol + 1 < this.colSizes.length) {
-            this.curCol += 1;
-            changed = true;
-          }
+          changed = this.move.right();
           break;
       }
       if (changed) {
         event.preventDefault();
-        this.focus();
       }
     }
+  }
+
+  get move() {
+    return {
+      up: () => {
+        if (this.curRow - 1 >= 0) {
+          this.curRow -= 1;
+          this.focus();
+          return true;
+        }
+        return false;
+      },
+      down: () => {
+        if (this.curRow + 1 < this.rowSizes.length) {
+          this.curRow += 1;
+          this.focus();
+          return true;
+        }
+        return false;
+      },
+      left: () => {
+        if (this.curCol - 1 >= 0) {
+          this.curCol -= 1;
+          this.focus();
+          return true;
+        }
+        return false;
+      },
+      right: () => {
+        if (this.curCol + 1 < this.colSizes.length) {
+          this.curCol += 1;
+          this.focus();
+          return true;
+        }
+        return false;
+      },
+    };
   }
 }
 

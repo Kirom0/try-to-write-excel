@@ -2,21 +2,50 @@ import {ExcelComponent} from '@core/ExcelComponent';
 
 export class FormulaComponent extends ExcelComponent {
   static className = 'excel__formula';
-  constructor($root) {
+  constructor($root, options = {}) {
     super($root, {
       name: 'Formula',
-      listeners: ['input', 'click'],
+      listeners: ['input', 'keydown'],
+      ...options,
     });
+    this.eTableSelectorSwitched = this.eTableSelectorSwitched.bind(this);
+    this.eTableCellChanged = this.eTableCellChanged.bind(this);
+
+    this.prepare();
+  }
+
+  prepare() {
+    this.on('table:selector:switched', this.eTableSelectorSwitched);
+    this.on('table:cell:changed', this.eTableCellChanged);
+  }
+
+  init() {
+    super.init();
+    this.$formula = this.$root.querySelector('#formula');
+  }
+
+  eTableSelectorSwitched(value) {
+    this.$formula.nativeEl.value = value;
+  }
+
+  eTableCellChanged(value) {
+    this.$formula.nativeEl.value = value;
   }
 
   onInput(event) {
-    console.log(this);
-    console.log(`${this.name} OnInput:`, event);
+    this.emitter.emit('formula:changed', this.$formula.value);
   }
 
-  onClick(event) {
-    console.log(`${this.name} onClick:`, event);
+  onKeydown(event) {
+    if (event.key === 'Tab') {
+      event.preventDefault();
+    } else
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.emitter.emit('formula:enter');
+    }
   }
+
 
   toHtml() {
     return `

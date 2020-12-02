@@ -1,6 +1,6 @@
 import {ExcelComponent} from '@core/ExcelComponent';
 import {
-  cellInitial, getPureHtml, getTemplate,
+  getPureHtml, getTemplate,
 } from '@/components/table/table.template';
 import {CSSRules} from '@core/css';
 import {TableCell} from '@/components/table/table.cell';
@@ -16,13 +16,17 @@ import {NewResizer} from '@/components/table/newResizer';
 
 export class TableComponent extends ExcelComponent {
   static className = 'excel__table';
-  constructor($root, rows, cols) {
+  constructor($root, options = {}) {
     super($root, {
       name: 'Table',
-      listeners: ['mousedown', 'keydown'],
+      listeners: ['mousedown', 'keydown', 'input'],
+      ...options,
     });
-    this.rows = rows || 10;
-    this.cols = cols || 20;
+    this.rows = 30;
+    this.cols = 20;
+
+    this.eFormulaChanged = this.eFormulaChanged.bind(this);
+    this.eFormulaEnter = this.eFormulaEnter.bind(this);
 
     this.prepare();
   }
@@ -32,20 +36,23 @@ export class TableComponent extends ExcelComponent {
     this.columnSizes = new SumsArray(this.cols, 120, []);
     this.rowSizes = new SumsArray(this.rows, 24, []);
     this.selector = new Selector(this, this.rowSizes, this.columnSizes);
+
+    this.cells = range(this.rows)
+        .map((rowIndex) => {
+          return range(this.cols).
+              map((colIndex) => new TableCell(this, rowIndex, colIndex));
+        });
+
+    this.on('formula:changed', this.eFormulaChanged);
+    this.on('formula:enter', this.eFormulaEnter);
   }
 
   initCells() {
-    this.cells = range(this.rows)
-        .map((rowIndex) => {
-          return range(this.cols)
-              .map((colIndex) =>
-                new TableCell(
-                    rowIndex,
-                    colIndex,
-                    cellInitial(rowIndex, colIndex)
-                )
-              );
-        });
+    this.cells.forEach(
+        (row) => row.forEach(
+            (cell) => cell.init()
+        )
+    );
   }
 
 
@@ -100,6 +107,14 @@ export class TableComponent extends ExcelComponent {
     };
   }
 
+  eFormulaChanged(value) {
+    this.selector.curCell.value = value;
+  }
+
+  eFormulaEnter() {
+    this.selector.move.down();
+  }
+
 
   onMousedown(event) {
     console.log('mousedown', event);
@@ -141,6 +156,10 @@ export class TableComponent extends ExcelComponent {
 
   onKeydown(event) {
     this.selector.keyDownHandler(event);
+  }
+
+  onInput(event) {
+    this.selector.curCell.updateValue();
   }
 
   htmlInitial() {

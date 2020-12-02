@@ -2,6 +2,13 @@ import {ExcelComponent} from '@core/ExcelComponent';
 
 export class ToolbarComponent extends ExcelComponent {
   static className = ['excel__toolbar', 'box-shadow'];
+  constructor($root, options = {}) {
+    super($root, {
+      name: 'Toolbar',
+      ...options,
+    });
+  }
+
   toHtml() {
     return `
       <i class="material-icons button">format_align_left</i>

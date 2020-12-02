@@ -1,13 +1,21 @@
 import {$} from '@core/dom';
 import {arrayFrom} from '@core/utils';
+import {Emitter} from '@core/Emitter';
 
 export class Excel {
   constructor(selector, options) {
     this.$el = $(selector);
+    this.emitter = new Emitter();
+    const componentsOptions = {emitter: this.emitter};
     this.components = (options.components || []).map(
-        (Component) => new Component($.create('div', {
-          class: arrayFrom(Component.className).join(' '),
-        }))
+        (Component) => new Component(
+            $.create(
+                'div',
+                {
+                  class: arrayFrom(Component.className).join(' '),
+                }),
+            componentsOptions
+        )
     );
     this.classes = options.classes;
   }
@@ -28,5 +36,11 @@ export class Excel {
         (component) => {
           component.init();
         });
+  }
+
+  destroy() {
+    this.components.forEach((component) => {
+      component.destroy();
+    });
   }
 }

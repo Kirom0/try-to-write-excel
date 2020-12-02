@@ -21,6 +21,10 @@ class Dom {
     return this.nativeEl.outerHTML;
   }
 
+  get value() {
+    return this.nativeEl.value;
+  }
+
   clear() {
     this.html = '';
   }
