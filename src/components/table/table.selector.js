@@ -15,7 +15,7 @@ export class Selector {
           this._curRow = value;
           this._curId =
             '' + value + this._curId.slice(this._curId.indexOf(':'));
-          this.$emit('table:selector:switched', this.curCell.value);
+          this.table.$emit('table:selector:switched', this.curCell.value);
         },
         get() {
           return this._curRow;
@@ -26,7 +26,7 @@ export class Selector {
           this._curCol = value;
           this._curId =
             this._curId.substr(0, this._curId.indexOf(':') + 1) + value;
-          this.$emit('table:selector:switched', this.curCell.value);
+          this.table.$emit('table:selector:switched', this.curCell.value);
         },
         get() {
           return this._curCol;
@@ -36,7 +36,7 @@ export class Selector {
         set(value) {
           [this._curRow, this._curCol] = parseId(value);
           this._curId = value;
-          this.$emit('table:selector:switched', this.curCell.value);
+          this.table.$emit('table:selector:switched', this.curCell.value);
         },
         get() {
           return this._curId;
@@ -48,7 +48,6 @@ export class Selector {
   prepare() {
     this.selected = [];
     this.groupSelector = new GroupSelector(this.rowSizes, this.colSizes);
-    this.$emit = this.table.emitter.emit;
   }
 
   init($table, cells) {
@@ -100,6 +99,10 @@ export class Selector {
     this.clear();
     this.select(this.curRow, this.curCol);
     this.cells[this.curRow][this.curCol].elem.nativeEl.focus({preventScroll: true});
+  }
+
+  isCurrent(tableCell) {
+    return tableCell.row === this.curRow && tableCell.col === this.curCol;
   }
 
   mouseDownHandler(event) {

@@ -9,14 +9,14 @@ export class FormulaComponent extends ExcelComponent {
       ...options,
     });
     this.eTableSelectorSwitched = this.eTableSelectorSwitched.bind(this);
-    this.eTableCellChanged = this.eTableCellChanged.bind(this);
+    this.eTableCurrentCellValue = this.eTableCurrentCellValue.bind(this);
 
     this.prepare();
   }
 
   prepare() {
-    this.on('table:selector:switched', this.eTableSelectorSwitched);
-    this.on('table:cell:changed', this.eTableCellChanged);
+    this.$on('table:selector:switched', this.eTableSelectorSwitched);
+    this.$on('table:currentCell:value', this.eTableCurrentCellValue);
   }
 
   init() {
@@ -28,12 +28,12 @@ export class FormulaComponent extends ExcelComponent {
     this.$formula.nativeEl.value = value;
   }
 
-  eTableCellChanged(value) {
+  eTableCurrentCellValue(value) {
     this.$formula.nativeEl.value = value;
   }
 
   onInput(event) {
-    this.emitter.emit('formula:changed', this.$formula.value);
+    this.$emit('formula:changed', this.$formula.value);
   }
 
   onKeydown(event) {
@@ -42,7 +42,7 @@ export class FormulaComponent extends ExcelComponent {
     } else
     if (event.key === 'Enter') {
       event.preventDefault();
-      this.emitter.emit('formula:enter');
+      this.$emit('formula:enter');
     }
   }
 

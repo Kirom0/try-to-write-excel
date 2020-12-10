@@ -6,7 +6,10 @@ export class Excel {
   constructor(selector, options) {
     this.$el = $(selector);
     this.emitter = new Emitter();
-    const componentsOptions = {emitter: this.emitter};
+    const componentsOptions = {
+      emitter: this.emitter,
+      store: options.store,
+    };
     this.components = (options.components || []).map(
         (Component) => new Component(
             $.create(

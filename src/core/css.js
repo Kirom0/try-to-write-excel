@@ -1,11 +1,11 @@
 import {arrayFrom} from '@core/utils';
 
 export class CSSRules {
-  constructor() {
+  constructor(styles) {
     this.styleElement = document.createElement('style');
     document.body.append(this.styleElement);
 
-    this.styles = {};
+    this.styles = styles || {};
   }
 
   addRules(arrayOfRules) {

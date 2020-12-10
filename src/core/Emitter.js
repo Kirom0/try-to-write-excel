@@ -1,6 +1,9 @@
 export class Emitter {
   constructor() {
     this.listeners = {};
+
+    this.emit = this.emit.bind(this);
+    this.subscribe = this.subscribe.bind(this);
   }
 
   emit(event, ...args) {

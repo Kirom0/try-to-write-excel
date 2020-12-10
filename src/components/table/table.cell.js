@@ -1,4 +1,5 @@
 import {cellInitial} from '@/components/table/table.template';
+import {toId} from '@/components/table/table.functions';
 
 export class TableCell {
   constructor(table, row, col) {
@@ -7,35 +8,53 @@ export class TableCell {
     this.col = col;
 
     this.prepare();
-
-    Object.defineProperties(this, {
-      value: {
-        set(value) {
-          this.$el.nativeEl.innerText = value;
-          this._value = value;
-          this.table.emitter.emit('table:cell:changed', value);
-        },
-        get() {
-          return this._value;
-        },
-      },
-    });
   }
 
   prepare() {
     this._value = '';
   }
 
-  init() {
-    this.$el = cellInitial(this.row, this.col);
+  setInitValue(value) {
+    this._value = value;
   }
 
-  updateValue() {
+  init() {
+    this.$el = cellInitial(this.row, this.col);
+    this.$el.nativeEl.innerText = this._value;
+  }
+
+  updateValue(needDispatchToSubs = true) {
     const value = this.$el.nativeEl.innerText;
     if (this._value !== value) {
       this._value = this.$el.nativeEl.innerText;
-      this.table.emitter.emit('table:cell:changed', this._value);
+      this.dispatchChanges(needDispatchToSubs);
     }
+  }
+
+  dispatchChanges(needDispatchToSubs) {
+    if (needDispatchToSubs) {
+      if (this.table.isCellCurrent(this)) {
+        this.table.$emit('table:currentCell:value', this._value);
+      }
+      this.table.dispatch(
+          {
+            type: 'CELL_CHANGED',
+            data: {
+              [toId(this.row, this.col)]: this._value,
+            },
+          }
+      );
+    }
+  }
+
+  setValue(value, needDispatchToSubs = true) {
+    this._value = value;
+    this.$el.nativeEl.innerText = value;
+    this.dispatchChanges(needDispatchToSubs);
+  }
+
+  get value() {
+    return this._value;
   }
 
   get elem() {
