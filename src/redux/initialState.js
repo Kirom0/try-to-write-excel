@@ -2,6 +2,14 @@ export const initialState = {
   excel_state: {
     columnSizes: {},
     rowSizes: {},
-    cells: {'0:0': 'help'},
+    cells: {
+      '0:0': {
+        value: 'help',
+        decoration: {
+          'text-align': 'right',
+        },
+      },
+    },
+    toolbar: {},
   },
 };

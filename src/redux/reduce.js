@@ -1,17 +1,33 @@
 import {atype} from '@/redux/actions';
 
 export function reduce(state, action) {
+  const newState = {...state};
   switch (action.type) {
     case atype.TABLE_RESIZE:
       if (action.orientation === 'column') {
-        return {...state, columnSizes: {...state.columnSizes, ...action.data}};
+        newState.columnSizes = {
+          ...state.columnSizes,
+          ...action.data,
+        };
       } else
       if (action.orientation === 'row') {
-        return {...state, rowSizes: {...state.rowSizes, ...action.data}};
+        newState.rowSizes = {
+          ...state.rowSizes,
+          ...action.data,
+        };
       }
-      return state;
+      return newState;
     case atype.CELL_CHANGED:
-      return {...state, cells: {...state.cells, ...action.data}};
-    default: return state;
+      if (!newState.cells[action.data.key]) {
+        newState.cells[action.data.key] = {value: '', decoration: {}};
+      }
+      newState.cells[action.data.key].value = action.data.value;
+      return newState;
+    case atype.TOOLBAR_STATE_CHANGED:
+      newState.toolbar = {
+        ...action.data,
+      };
+      return newState;
+    default: return newState;
   }
 }

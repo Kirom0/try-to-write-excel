@@ -73,7 +73,8 @@ export class TableComponent extends ExcelComponent {
     });
     Object.keys(cells).forEach((id) => {
       const [row, col] = parseId(id);
-      this.cells[row][col].setInitValue(cells[id]);
+      this.cells[row][col].setInitValue(cells[id].value);
+      this.cells[row][col].setInitDecoration(cells[id].decoration);
     });
   }
 
@@ -133,7 +134,7 @@ export class TableComponent extends ExcelComponent {
   }
 
   eFormulaChanged(value) {
-    this.selector.curCell.setValue = value;
+    this.selector.curCell.setValue(value);
   }
 
   eFormulaEnter() {
@@ -143,7 +144,7 @@ export class TableComponent extends ExcelComponent {
   resize(resizeHandler, orientation) {
     resizeHandler().then((data) => {
       console.log(data);
-      this.store.dispatch({type: 'TABLE_RESIZE', orientation, data});
+      this.store.dispatch({type: atype.TABLE_RESIZE, orientation, data});
     });
   }
 

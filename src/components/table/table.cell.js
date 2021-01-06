@@ -1,5 +1,7 @@
 import {cellInitial} from '@/components/table/table.template';
 import {toId} from '@/components/table/table.functions';
+import {defaultCellDecoration} from '@/redux/defaultCellDecoration';
+import {atype, createAction} from '@/redux/actions';
 
 export class TableCell {
   constructor(table, row, col) {
@@ -12,10 +14,19 @@ export class TableCell {
 
   prepare() {
     this._value = '';
+    this.id = toId(this.row, this.col);
+    this.decoration = defaultCellDecoration;
   }
 
   setInitValue(value) {
     this._value = value;
+  }
+
+  setInitDecoration(decorations) {
+    this.decoration = {
+      ...this.decoration,
+      ...decorations,
+    };
   }
 
   init() {
@@ -37,12 +48,10 @@ export class TableCell {
         this.table.$emit('table:currentCell:value', this._value);
       }
       this.table.dispatch(
-          {
-            type: 'CELL_CHANGED',
-            data: {
-              [toId(this.row, this.col)]: this._value,
-            },
-          }
+          createAction(atype.CELL_CHANGED, {
+            key: this.id,
+            value: this._value,
+          })
       );
     }
   }
@@ -55,6 +64,25 @@ export class TableCell {
 
   get value() {
     return this._value;
+  }
+
+  setDecoration(decorations) {
+    const isCurrent = this.table.isCellCurrent(this);
+    Object.keys(decorations).forEach((key) => {
+      this.decoration[key] = decorations[key];
+    });
+    if (isCurrent) {
+      this.table.$emit('cell:decoration:changed', {
+        id: this.id,
+        decorations,
+      });
+    }
+    this.table.dispatch({
+      type: '',
+      data: {
+        [this.id]: decorations,
+      },
+    });
   }
 
   get elem() {
