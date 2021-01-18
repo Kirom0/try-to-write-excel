@@ -6,7 +6,7 @@ export const initialState = {
       '0:0': {
         value: 'help',
         decoration: {
-          'text-align': 'right',
+          'align': 'alignRight',
         },
       },
     },

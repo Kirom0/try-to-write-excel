@@ -29,6 +29,7 @@ export class Button {
     this.changeCB = changeCB;
     this.$elem = $.create('div', {class: 'button__container'})
         .setHtml(this.getHtml(inputProps));
+    this.$input = this.$elem.querySelector('input');
   }
 
   getHtml(inputProps) {

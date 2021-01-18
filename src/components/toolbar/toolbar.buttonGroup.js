@@ -73,4 +73,9 @@ export class ButtonGroup extends Controller {
     const name = $target.dataset['name'];
     this.clickHanlers[name]();
   }
+
+  acceptValue(value) {
+    this.changeState(this.unicButtonGroupName, value);
+    this.buttons[value].$input.nativeEl.checked = true;
+  }
 }

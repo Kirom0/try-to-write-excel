@@ -2,6 +2,7 @@ import {cellInitial} from '@/components/table/table.template';
 import {toId} from '@/components/table/table.functions';
 import {defaultCellDecoration} from '@/redux/defaultCellDecoration';
 import {atype, createAction} from '@/redux/actions';
+import {etypes} from '@core/Emitter';
 
 export class TableCell {
   constructor(table, row, col) {
@@ -16,6 +17,7 @@ export class TableCell {
     this._value = '';
     this.id = toId(this.row, this.col);
     this.decoration = defaultCellDecoration;
+    this._decorationInited = false;
   }
 
   setInitValue(value) {
@@ -23,66 +25,88 @@ export class TableCell {
   }
 
   setInitDecoration(decorations) {
+    if (this._decorationInited) {
+      throw new Error('setInitDecoration method already was called');
+    }
     this.decoration = {
-      ...this.decoration,
+      ...defaultCellDecoration,
       ...decorations,
     };
+    this._decorationInited = true;
   }
 
   init() {
     this.$el = cellInitial(this.row, this.col);
     this.$el.nativeEl.innerText = this._value;
+
+    const applyCSS = (function(styles) {
+      this.table.cssRules.addRules({
+        [`[data-id="${this.id}"]`]: styles,
+      });
+    }).bind(this);
+
+    applyCSS(this.decoration);
+    this.decoration = new Proxy(this.decoration, {
+      set(target, prop, value, receiver) {
+        applyCSS({
+          [prop]: value,
+        });
+        target[prop] = value;
+        return true;
+      },
+    });
   }
 
-  updateValue(needDispatchToSubs = true) {
+  setValueFromElement() {
     const value = this.$el.nativeEl.innerText;
     if (this._value !== value) {
       this._value = this.$el.nativeEl.innerText;
-      this.dispatchChanges(needDispatchToSubs);
+      this.dispatchValueChanges();
     }
   }
 
-  dispatchChanges(needDispatchToSubs) {
-    if (needDispatchToSubs) {
-      if (this.table.isCellCurrent(this)) {
-        this.table.$emit('table:currentCell:value', this._value);
-      }
-      this.table.dispatch(
-          createAction(atype.CELL_CHANGED, {
-            key: this.id,
-            value: this._value,
-          })
-      );
+  dispatchValueChanges() {
+    if (this.table.isCellCurrent(this)) {
+      this.table.$emit(etypes.TABLE_CURRENTCELL_VALUE_CHANGED, this._value);
     }
+    this.table.dispatch(
+        createAction(atype.CELL_CHANGED, {
+          key: this.id,
+          value: this._value,
+        })
+    );
   }
 
-  setValue(value, needDispatchToSubs = true) {
+  setValue(value) {
     this._value = value;
     this.$el.nativeEl.innerText = value;
-    this.dispatchChanges(needDispatchToSubs);
-  }
-
-  get value() {
-    return this._value;
+    this.dispatchValueChanges();
   }
 
   setDecoration(decorations) {
-    const isCurrent = this.table.isCellCurrent(this);
     Object.keys(decorations).forEach((key) => {
       this.decoration[key] = decorations[key];
     });
+
+    const isCurrent = this.table.isCellCurrent(this);
     if (isCurrent) {
-      this.table.$emit('cell:decoration:changed', {
+      this.table.$emit(etypes.TABLE_CURRENTCELL_DECORATION_CHANGED, {
         id: this.id,
         decorations,
       });
     }
-    this.table.dispatch({
-      type: '',
-      data: {
-        [this.id]: decorations,
-      },
-    });
+    this.table.dispatch(
+        createAction(
+            atype.CELL_DECORATION_CHANGED,
+            {
+              [this.id]: decorations,
+            }
+        )
+    );
+  }
+
+  get value() {
+    return this._value;
   }
 
   get elem() {

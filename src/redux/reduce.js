@@ -2,6 +2,13 @@ import {atype} from '@/redux/actions';
 
 export function reduce(state, action) {
   const newState = {...state};
+
+  const createCell = function(id) {
+    if (!newState.cells[id]) {
+      newState.cells[id] = {value: '', decoration: {}};
+    }
+  };
+
   switch (action.type) {
     case atype.TABLE_RESIZE:
       if (action.orientation === 'column') {
@@ -18,15 +25,12 @@ export function reduce(state, action) {
       }
       return newState;
     case atype.CELL_CHANGED:
-      if (!newState.cells[action.data.key]) {
-        newState.cells[action.data.key] = {value: '', decoration: {}};
-      }
+      createCell(action.data.key);
       newState.cells[action.data.key].value = action.data.value;
       return newState;
     case atype.TOOLBAR_STATE_CHANGED:
-      newState.toolbar = {
-        ...action.data,
-      };
+      createCell(action.data.cellId);
+      newState.cells[action.data.cellId].decoration = action.data.state;
       return newState;
     default: return newState;
   }

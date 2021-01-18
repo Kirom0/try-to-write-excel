@@ -1,12 +1,17 @@
+import {stateToCssConfiguration} from '@/components/toolbar/toolbar.state&css';
+
 export class Controller {
   constructor(options) {
     this._state = {};
-    const {changeEmitter} = options;
+    const {name, changeEmitter} = options;
+    this.name = name;
     this.changeEmitter = changeEmitter;
   }
 
   changeState(key, value) {
     this._state[key] = value;
+    // eslint-disable-next-line no-debugger
+    debugger;
     this.changeEmitter(this.state);
   }
 
@@ -26,5 +31,15 @@ export class Controller {
 
   getCSSRules() {
     throw new Error('getCSSRules is not implemented');
+  }
+
+  acceptValue(value) {
+    throw new Error('acceptValue is not implemented');
+  }
+
+  setDefaultValue() {
+    this.acceptValue(
+        stateToCssConfiguration[this.name].default
+    );
   }
 }

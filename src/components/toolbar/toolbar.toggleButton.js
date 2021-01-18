@@ -41,4 +41,9 @@ export class ToggleButton extends Controller {
   onClick(event) {
     this.button.toggle();
   }
+
+  acceptValue(value = false) {
+    value ? this.button.turnOn() : this.button.turnOff();
+    this.button.$input.nativeEl.checked = value;
+  }
 }

@@ -1,5 +1,6 @@
 import {$} from '@core/dom';
 import {parseId} from '@/components/table/table.functions';
+import {etypes} from '@core/Emitter';
 
 export class Selector {
   constructor(table, rowSizes, colSizes) {
@@ -15,7 +16,7 @@ export class Selector {
           this._curRow = value;
           this._curId =
             '' + value + this._curId.slice(this._curId.indexOf(':'));
-          this.table.$emit('table:selector:switched', this.curCell.value);
+          this.table.$emit(etypes.TABLE_CURRENTCELL_SWITCHED, this.curCell);
         },
         get() {
           return this._curRow;
@@ -26,7 +27,7 @@ export class Selector {
           this._curCol = value;
           this._curId =
             this._curId.substr(0, this._curId.indexOf(':') + 1) + value;
-          this.table.$emit('table:selector:switched', this.curCell.value);
+          this.table.$emit(etypes.TABLE_CURRENTCELL_SWITCHED, this.curCell);
         },
         get() {
           return this._curCol;
@@ -36,7 +37,7 @@ export class Selector {
         set(value) {
           [this._curRow, this._curCol] = parseId(value);
           this._curId = value;
-          this.table.$emit('table:selector:switched', this.curCell.value);
+          this.table.$emit(etypes.TABLE_CURRENTCELL_SWITCHED, this.curCell);
         },
         get() {
           return this._curId;

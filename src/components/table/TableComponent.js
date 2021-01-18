@@ -15,6 +15,8 @@ import {NewResizer} from '@/components/table/newResizer';
 import {parseId} from '@/components/table/table.functions';
 import {SumsArrayWrapper} from '@/components/table/SumsArrayWrapper';
 import {atype} from '@/redux/actions';
+import {etypes} from '@core/Emitter';
+import {initCellDecoration} from '@/components/toolbar/toolbar.functions';
 
 export class TableComponent extends ExcelComponent {
   static className = 'excel__table';
@@ -55,8 +57,8 @@ export class TableComponent extends ExcelComponent {
     this.HResizer = new NewResizer(this, 'OX', this.columnSizes);
     this.VResizer = new NewResizer(this, 'OY', this.rowSizes);
 
-    this.$on('formula:changed', this.eFormulaChanged);
-    this.$on('formula:enter', this.eFormulaEnter);
+    this.$on(etypes.FORMULA_VALUE_CHANGED, this.eFormulaChanged);
+    this.$on(etypes.FORMULA_VALUE_CHANGED, this.eFormulaEnter);
 
     this.applyState();
   }
@@ -74,7 +76,8 @@ export class TableComponent extends ExcelComponent {
     Object.keys(cells).forEach((id) => {
       const [row, col] = parseId(id);
       this.cells[row][col].setInitValue(cells[id].value);
-      this.cells[row][col].setInitDecoration(cells[id].decoration);
+      initCellDecoration(this.cells[row][col], cells[id].decoration);
+      // this.cells[row][col].setInitDecoration(cells[id].decoration);
     });
   }
 
@@ -191,7 +194,7 @@ export class TableComponent extends ExcelComponent {
   }
 
   onInput(event) {
-    this.selector.curCell.updateValue();
+    this.selector.curCell.setValueFromElement();
   }
 
   htmlInitial() {

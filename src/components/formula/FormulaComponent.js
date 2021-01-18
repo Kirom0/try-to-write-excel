@@ -1,4 +1,5 @@
 import {ExcelComponent} from '@core/ExcelComponent';
+import {etypes} from '@core/Emitter';
 
 export class FormulaComponent extends ExcelComponent {
   static className = 'excel__formula';
@@ -15,8 +16,8 @@ export class FormulaComponent extends ExcelComponent {
   }
 
   prepare() {
-    this.$on('table:selector:switched', this.eTableSelectorSwitched);
-    this.$on('table:currentCell:value', this.eTableCurrentCellValue);
+    this.$on(etypes.TABLE_CURRENTCELL_SWITCHED, this.eTableSelectorSwitched);
+    this.$on(etypes.TABLE_CURRENTCELL_VALUE_CHANGED, this.eTableCurrentCellValue);
   }
 
   init() {
@@ -24,8 +25,8 @@ export class FormulaComponent extends ExcelComponent {
     this.$formula = this.$root.querySelector('#formula');
   }
 
-  eTableSelectorSwitched(value) {
-    this.$formula.nativeEl.value = value;
+  eTableSelectorSwitched(tableCell) {
+    this.$formula.nativeEl.value = tableCell.value;
   }
 
   eTableCurrentCellValue(value) {
@@ -33,7 +34,7 @@ export class FormulaComponent extends ExcelComponent {
   }
 
   onInput(event) {
-    this.$emit('formula:changed', this.$formula.value);
+    this.$emit(etypes.FORMULA_VALUE_CHANGED, this.$formula.value);
   }
 
   onKeydown(event) {
@@ -42,7 +43,7 @@ export class FormulaComponent extends ExcelComponent {
     } else
     if (event.key === 'Enter') {
       event.preventDefault();
-      this.$emit('formula:enter');
+      this.$emit(etypes.FORMULA_ENTER);
     }
   }
 

@@ -5,6 +5,9 @@ import {$} from '@core/dom';
 import {ToggleButton} from '@/components/toolbar/toolbar.toggleButton';
 import {atype, createAction} from '@/redux/actions';
 import {CSSRules} from '@core/css';
+import {etypes} from '@core/Emitter';
+import {eo} from '@core/ExtendedObj';
+import {stateToCssConfiguration} from '@/components/toolbar/toolbar.state&css';
 
 export class ToolbarComponent extends ExcelComponent {
   static className = ['excel__toolbar', 'box-shadow'];
@@ -21,13 +24,38 @@ export class ToolbarComponent extends ExcelComponent {
   prepare() {
     this.state = {};
     const changeEmitter = (state) => {
-      this.state = {
-        ...this.state,
-        ...state,
-      };
-      console.log('changeEmit: ', this.state);
-      this.store.dispatch(createAction(atype.TOOLBAR_STATE_CHANGED, this.state));
-      this.refreshCSSRules(this.state);
+      let areChanges = false;
+      for (const key in state) {
+        if (Object.hasOwnProperty.call(state, key)) {
+          if (this.state[key] !== state[key]) {
+            areChanges = true;
+            break;
+          }
+        }
+      }
+
+      if (areChanges) {
+        this.state = {
+          ...this.state,
+          ...state,
+        };
+        this.tableCell.setDecoration(
+            eo(state).map((k) => this.controllers[k].getCSSRules())
+        );
+        eo(this.state).forEach((k, v) => {
+          if (v === stateToCssConfiguration[k].default) {
+            delete this.state[k];
+          }
+        });
+
+        console.log('changeEmit: ', this.state);
+        this.store.dispatch(
+            createAction(atype.TOOLBAR_STATE_CHANGED, {
+              cellId: this._tableCell.id,
+              state: this.state,
+            })
+        );
+      }
     };
     const align = new ButtonGroup(
         [
@@ -36,6 +64,7 @@ export class ToolbarComponent extends ExcelComponent {
           new Button('alignRight', 'format_align_right'),
         ],
         {
+          name: 'align',
           unicButtonGroupName: 'align',
           cssRule: 'text-align',
           cssValues: {
@@ -50,6 +79,7 @@ export class ToolbarComponent extends ExcelComponent {
     const bold = new ToggleButton(
         new Button('bold', 'format_bold'),
         {
+          name: 'bold',
           necessaryMeta: necessaryMetaCreator('bold'),
           cssRule: 'font-weight',
           cssValues: ['normal', 'bold'],
@@ -59,6 +89,7 @@ export class ToolbarComponent extends ExcelComponent {
     const italic = new ToggleButton(
         new Button('italic', 'format_italic'),
         {
+          name: 'italic',
           necessaryMeta: necessaryMetaCreator('italic'),
           cssRule: 'font-style',
           cssValues: ['normal', 'italic'],
@@ -68,6 +99,7 @@ export class ToolbarComponent extends ExcelComponent {
     const underline = new ToggleButton(
         new Button('underline', 'format_underline'),
         {
+          name: 'underline',
           necessaryMeta: necessaryMetaCreator('underline'),
           cssRule: 'text-decoration',
           cssValues: ['none', 'underline'],
@@ -88,6 +120,33 @@ export class ToolbarComponent extends ExcelComponent {
       underline,
     ];
     this.cssRules = new CSSRules();
+
+    this.setTargetCell = this.setTargetCell.bind(this);
+    this.$on(etypes.TABLE_CURRENTCELL_SWITCHED, this.setTargetCell);
+  }
+
+  setTargetCell(tableCell) {
+    this._tableCell = tableCell;
+    this.state = {};
+
+    const store = this.store.get();
+    const decoration = (store.cells[tableCell.id] || {decoration: {}}).decoration;
+    for (const key in decoration) {
+      if (Object.hasOwnProperty.call(decoration, key)) {
+        this.controllers[key].acceptValue(decoration[key]);
+      }
+    }
+    eo(this.controllers).forEach((name, controller) => {
+      if (Object.hasOwnProperty.call(decoration, name)) {
+        controller.acceptValue(decoration[name]);
+      } else {
+        controller.setDefaultValue();
+      }
+    });
+  }
+
+  get tableCell() {
+    return this._tableCell;
   }
 
   changerState(state) {
@@ -108,20 +167,6 @@ export class ToolbarComponent extends ExcelComponent {
     this.orderOfTheControllers.forEach((controller) => {
       controller.init();
       this.$root.append(controller.get$());
-    });
-  }
-
-  refreshCSSRules(state) {
-    let rules = {};
-    Object.keys(state).forEach((key) => {
-      rules = {
-        ...rules,
-        ...this.controllers[key].getCSSRules(),
-      };
-    });
-    const selector = '[data-id="0:0"]';
-    this.cssRules.addRules({
-      [selector]: rules,
     });
   }
 
