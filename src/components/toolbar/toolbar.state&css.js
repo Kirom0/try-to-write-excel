@@ -45,21 +45,24 @@ export const stateToCssConfiguration = {
     value: [
       {
         name: 'alignLeft',
-        value: {
+        css: {
           'text-align': 'left',
         },
+        ['material-icon']: 'format_align_left',
       },
       {
         name: 'alignCenter',
-        value: {
+        css: {
           'text-align': 'center',
         },
+        ['material-icon']: 'format_align_center',
       },
       {
         name: 'alignRight',
-        value: {
+        css: {
           'text-align': 'right',
         },
+        ['material-icon']: 'format_align_right',
       },
     ],
   },
@@ -74,6 +77,7 @@ export const stateToCssConfiguration = {
         'font-weight': 'normal',
       },
     },
+    ['material-icon']: 'format_bold',
   },
   italic: {
     type: 'boolean',
@@ -86,6 +90,7 @@ export const stateToCssConfiguration = {
         'font-style': 'normal',
       },
     },
+    ['material-icon']: 'format_italic',
   },
   underline: {
     type: 'boolean',
@@ -98,6 +103,7 @@ export const stateToCssConfiguration = {
         'text-decoration': 'none',
       },
     },
+    ['material-icon']: 'format_underline',
   },
 };
 
@@ -111,7 +117,7 @@ function applyConfiguration() {
         {
           const values = {};
           v.value.forEach((v) => {
-            values[v.name] = v.value;
+            values[v.name] = v.css;
           });
           setValue(k, values);
         }

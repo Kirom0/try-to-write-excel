@@ -6,7 +6,6 @@ export class Button {
     this.value = value;
 
     this._isOn = false;
-    this.toggleMode = true;
 
     Object.defineProperties(this, {
       isOn: {
@@ -32,6 +31,12 @@ export class Button {
     this.$input = this.$elem.querySelector('input');
   }
 
+  reset(value) { // Использовать только для изменения состояния кнопки без диспатча в стор
+    value = value || false;
+    this._isOn = value;
+    this.$input.nativeEl.checked = value;
+  }
+
   getHtml(inputProps) {
     return `
     <input
@@ -45,18 +50,8 @@ export class Button {
     `;
   }
 
-  set toggleMode(flag) {
-    this._toggleMode = flag;
-  }
-
-  get toggleMode() {
-    return this._toggleMode;
-  }
-
   toggle() {
-    if (this.toggleMode) {
-      this.isOn = !this.isOn;
-    }
+    this.isOn = !this.isOn;
   }
 
   turnOn() {

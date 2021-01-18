@@ -1,18 +1,19 @@
 import {Controller} from '@/components/toolbar/toolbar.controller';
 import {$} from '@core/dom';
+import {stateToCssConfiguration} from '@/components/toolbar/toolbar.state&css';
+import {Button} from '@/components/toolbar/toolbar.button';
 
 export class ButtonGroup extends Controller {
-  constructor(buttons = [], options) {
+  constructor(options) {
     super(options);
-    const {unicButtonGroupName, necessaryMeta, cssRule, cssValues} = options;
-    this.unicButtonGroupName = unicButtonGroupName;
-    this.necessaryMeta = necessaryMeta;
-    this.cssRule = cssRule;
-    this.cssValues = cssValues;
-    this.nameButtons = buttons.map((button) => button.name);
+    const {metaData} = options;
+    this.metaData = metaData;
+
     this.buttons = {};
-    buttons.forEach((button) => {
-      this.buttons[button.name] = button;
+    this.nameButtons = [];
+    stateToCssConfiguration[this.name].value.forEach((btn) => {
+      this.buttons[btn.name] = new Button(btn.name, btn['material-icon']);
+      this.nameButtons.push(btn.name);
     });
 
     this.prepare();
@@ -31,8 +32,8 @@ export class ButtonGroup extends Controller {
   init() {
     const inputProps = {
       type: 'radio',
-      name: this.unicButtonGroupName,
-      ...this.necessaryMeta,
+      name: this.name,
+      ...this.metaData,
     };
     this.nameButtons.forEach((nameButton) => {
       const button = this.buttons[nameButton];
@@ -42,7 +43,7 @@ export class ButtonGroup extends Controller {
       },
       (value) => {
         if (value) {
-          this.changeState(this.unicButtonGroupName, nameButton);
+          this.changeState(this.name, nameButton);
         }
       });
     });
@@ -61,21 +62,21 @@ export class ButtonGroup extends Controller {
     this.buttons[name].turnOn();
   }
 
-
-  getCSSRules() {
-    return {
-      [this.cssRule]: this.cssValues[this.state[this.unicButtonGroupName]],
-    };
-  }
-
   onClick(event) {
     const $target = $(event.target);
     const name = $target.dataset['name'];
     this.clickHanlers[name]();
   }
 
-  acceptValue(value) {
-    this.changeState(this.unicButtonGroupName, value);
-    this.buttons[value].$input.nativeEl.checked = true;
+  reset(value) {
+    if (value === undefined) {
+      value = this.defaultValue;
+    }
+    this.nameButtons
+        .filter((buttonName) => buttonName !== value)
+        .forEach((buttonName) => {
+          this.buttons[buttonName].reset(false);
+        });
+    this.buttons[value].reset(true);
   }
 }

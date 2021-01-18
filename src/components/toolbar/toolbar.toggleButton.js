@@ -1,20 +1,22 @@
 import {Controller} from '@/components/toolbar/toolbar.controller';
+import {Button} from '@/components/toolbar/toolbar.button';
+import {stateToCssConfiguration} from '@/components/toolbar/toolbar.state&css';
 
 export class ToggleButton extends Controller {
-  constructor(button, options) {
+  constructor(options) {
     super(options);
-    this.button = button;
-    const {necessaryMeta, cssRule, cssValues} = options;
-    this.necessaryMeta = necessaryMeta;
-    this.cssRule = cssRule;
-    this.cssValues = cssValues;
+    const {metaData} = options;
+    this.metaData = metaData;
+
+    const btnValue = stateToCssConfiguration[this.name]['material-icon'];
+    this.button = new Button(this.name, btnValue);
   }
 
   init() {
     this.button.init(
         {
           type: 'checkbox',
-          ...this.necessaryMeta,
+          ...this.metaData,
         },
         (value) => {
           this.changeState(this.button.name, value);
@@ -26,24 +28,14 @@ export class ToggleButton extends Controller {
     return this.button.$elem;
   }
 
-  getState() {
-    return {
-      [this.button.name]: this.button.isOn,
-    };
-  }
-
-  getCSSRules() {
-    return {
-      [this.cssRule]: this.cssValues[+this.button.isOn],
-    };
-  }
-
   onClick(event) {
     this.button.toggle();
   }
 
-  acceptValue(value = false) {
-    value ? this.button.turnOn() : this.button.turnOff();
-    this.button.$input.nativeEl.checked = value;
+  reset(value) {
+    if (value === undefined) {
+      value = this.defaultValue;
+    }
+    this.button.reset(value);
   }
 }

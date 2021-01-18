@@ -33,13 +33,11 @@ export class Controller {
     throw new Error('getCSSRules is not implemented');
   }
 
-  acceptValue(value) {
-    throw new Error('acceptValue is not implemented');
+  reset(value) {
+    throw new Error('"reset" method is not implemented');
   }
 
-  setDefaultValue() {
-    this.acceptValue(
-        stateToCssConfiguration[this.name].default
-    );
+  get defaultValue() {
+    return stateToCssConfiguration[this.name].default;
   }
 }

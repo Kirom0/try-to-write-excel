@@ -1,5 +1,4 @@
 import {ExcelComponent} from '@core/ExcelComponent';
-import {Button} from '@/components/toolbar/toolbar.button';
 import {ButtonGroup} from '@/components/toolbar/toolbar.buttonGroup';
 import {$} from '@core/dom';
 import {ToggleButton} from '@/components/toolbar/toolbar.toggleButton';
@@ -7,7 +6,10 @@ import {atype, createAction} from '@/redux/actions';
 import {CSSRules} from '@core/css';
 import {etypes} from '@core/Emitter';
 import {eo} from '@core/ExtendedObj';
-import {stateToCssConfiguration} from '@/components/toolbar/toolbar.state&css';
+import {
+  stateToCss,
+  stateToCssConfiguration,
+} from '@/components/toolbar/toolbar.state&css';
 
 export class ToolbarComponent extends ExcelComponent {
   static className = ['excel__toolbar', 'box-shadow'];
@@ -22,104 +24,33 @@ export class ToolbarComponent extends ExcelComponent {
   }
 
   prepare() {
-    this.state = {};
-    const changeEmitter = (state) => {
-      let areChanges = false;
-      for (const key in state) {
-        if (Object.hasOwnProperty.call(state, key)) {
-          if (this.state[key] !== state[key]) {
-            areChanges = true;
-            break;
-          }
-        }
-      }
-
-      if (areChanges) {
-        this.state = {
-          ...this.state,
-          ...state,
-        };
-        this.tableCell.setDecoration(
-            eo(state).map((k) => this.controllers[k].getCSSRules())
-        );
-        eo(this.state).forEach((k, v) => {
-          if (v === stateToCssConfiguration[k].default) {
-            delete this.state[k];
-          }
-        });
-
-        console.log('changeEmit: ', this.state);
-        this.store.dispatch(
-            createAction(atype.TOOLBAR_STATE_CHANGED, {
-              cellId: this._tableCell.id,
-              state: this.state,
-            })
-        );
-      }
-    };
-    const align = new ButtonGroup(
-        [
-          new Button('alignLeft', 'format_align_left'),
-          new Button('alignCenter', 'format_align_center'),
-          new Button('alignRight', 'format_align_right'),
-        ],
-        {
-          name: 'align',
-          unicButtonGroupName: 'align',
-          cssRule: 'text-align',
-          cssValues: {
-            'alignLeft': 'left',
-            'alignCenter': 'center',
-            'alignRight': 'right',
-          },
-          necessaryMeta: necessaryMetaCreator('align'),
-          changeEmitter,
-        },
-    );
-    const bold = new ToggleButton(
-        new Button('bold', 'format_bold'),
-        {
-          name: 'bold',
-          necessaryMeta: necessaryMetaCreator('bold'),
-          cssRule: 'font-weight',
-          cssValues: ['normal', 'bold'],
-          changeEmitter,
-        }
-    );
-    const italic = new ToggleButton(
-        new Button('italic', 'format_italic'),
-        {
-          name: 'italic',
-          necessaryMeta: necessaryMetaCreator('italic'),
-          cssRule: 'font-style',
-          cssValues: ['normal', 'italic'],
-          changeEmitter,
-        }
-    );
-    const underline = new ToggleButton(
-        new Button('underline', 'format_underline'),
-        {
-          name: 'underline',
-          necessaryMeta: necessaryMetaCreator('underline'),
-          cssRule: 'text-decoration',
-          cssValues: ['none', 'underline'],
-          changeEmitter,
-        }
-    );
-
-    this.controllers = {
-      align,
-      bold,
-      italic,
-      underline,
-    };
-    this.orderOfTheControllers = [
-      align,
-      bold,
-      italic,
-      underline,
-    ];
     this.cssRules = new CSSRules();
+    this.state = {};
+
+    const changeEmitter = (state) => _changeEmitter(this, state);
+    const align = new ButtonGroup({
+      name: 'align',
+      metaData: metaDataCreator('align'),
+      changeEmitter,
+    });
+    const bold = new ToggleButton({
+      name: 'bold',
+      metaData: metaDataCreator('bold'),
+      changeEmitter,
+    });
+    const italic = new ToggleButton({
+      name: 'italic',
+      metaData: metaDataCreator('italic'),
+      changeEmitter,
+    });
+    const underline = new ToggleButton({
+      name: 'underline',
+      metaData: metaDataCreator('underline'),
+      changeEmitter,
+    });
+
+    this.controllers = {align, bold, italic, underline};
+    this.orderOfTheControllers = [align, bold, italic, underline];
 
     this.setTargetCell = this.setTargetCell.bind(this);
     this.$on(etypes.TABLE_CURRENTCELL_SWITCHED, this.setTargetCell);
@@ -131,30 +62,18 @@ export class ToolbarComponent extends ExcelComponent {
 
     const store = this.store.get();
     const decoration = (store.cells[tableCell.id] || {decoration: {}}).decoration;
-    for (const key in decoration) {
-      if (Object.hasOwnProperty.call(decoration, key)) {
-        this.controllers[key].acceptValue(decoration[key]);
-      }
-    }
     eo(this.controllers).forEach((name, controller) => {
       if (Object.hasOwnProperty.call(decoration, name)) {
-        controller.acceptValue(decoration[name]);
+        controller.reset(decoration[name]);
+        this.state[name] = decoration[name];
       } else {
-        controller.setDefaultValue();
+        controller.reset();
       }
     });
   }
 
   get tableCell() {
     return this._tableCell;
-  }
-
-  changerState(state) {
-    this.state = {
-      ...this.state,
-      ...state,
-    };
-    console.log(this.state);
   }
 
   init() {
@@ -243,6 +162,41 @@ export class ToolbarComponent extends ExcelComponent {
 }
 
 
-function necessaryMetaCreator(value) {
+function metaDataCreator(value) {
   return {'data-button': value};
+}
+
+function _changeEmitter(context, state) {
+  let areChanges = false;
+  for (const key in state) {
+    if (Object.hasOwnProperty.call(state, key)) {
+      if (context.state[key] !== state[key]) {
+        areChanges = true;
+        break;
+      }
+    }
+  }
+
+  if (areChanges) {
+    context.state = {
+      ...context.state,
+      ...state,
+    };
+    context.tableCell.setDecoration(
+        eo(state).map((k, v) => stateToCss[k][v])
+    );
+    eo(context.state).forEach((k, v) => {
+      if (v === stateToCssConfiguration[k].default) {
+        delete context.state[k];
+      }
+    });
+
+    console.log('changeEmit: ', context.state);
+    context.store.dispatch(
+        createAction(atype.TOOLBAR_STATE_CHANGED, {
+          cellId: context._tableCell.id,
+          state: context.state,
+        })
+    );
+  }
 }
