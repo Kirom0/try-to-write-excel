@@ -1,6 +1,5 @@
 import {cellInitial} from '@/components/table/table.template';
 import {toId} from '@/components/table/table.functions';
-import {defaultCellDecoration} from '@/redux/defaultCellDecoration';
 import {atype, createAction} from '@/redux/actions';
 import {etypes} from '@core/Emitter';
 
@@ -16,7 +15,7 @@ export class TableCell {
   prepare() {
     this._value = '';
     this.id = toId(this.row, this.col);
-    this.decoration = defaultCellDecoration;
+    this.decoration = {};
     this._decorationInited = false;
   }
 
@@ -28,10 +27,7 @@ export class TableCell {
     if (this._decorationInited) {
       throw new Error('setInitDecoration method already was called');
     }
-    this.decoration = {
-      ...defaultCellDecoration,
-      ...decorations,
-    };
+    this.decoration = decorations;
     this._decorationInited = true;
   }
 
@@ -45,9 +41,10 @@ export class TableCell {
       });
     }).bind(this);
 
+    this._decorationInited = true;
     applyCSS(this.decoration);
     this.decoration = new Proxy(this.decoration, {
-      set(target, prop, value, receiver) {
+      set(target, prop, value) {
         applyCSS({
           [prop]: value,
         });
