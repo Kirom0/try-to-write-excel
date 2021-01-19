@@ -1,4 +1,4 @@
-import {stateToCssConfiguration} from '@/components/toolbar/toolbar.state&css';
+import {controllersConfiguration} from '@/components/toolbar/toolbar.controller.config';
 
 export class Controller {
   constructor(options) {
@@ -29,15 +29,11 @@ export class Controller {
     throw new Error('onClick is not implemented');
   }
 
-  getCSSRules() {
-    throw new Error('getCSSRules is not implemented');
-  }
-
   reset(value) {
     throw new Error('"reset" method is not implemented');
   }
 
   get defaultValue() {
-    return stateToCssConfiguration[this.name].default;
+    return controllersConfiguration[this.name].default;
   }
 }

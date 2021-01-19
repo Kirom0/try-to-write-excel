@@ -1,6 +1,6 @@
 import {Controller} from '@/components/toolbar/toolbar.controller';
 import {$} from '@core/dom';
-import {stateToCssConfiguration} from '@/components/toolbar/toolbar.state&css';
+import {controllersConfiguration} from '@/components/toolbar/toolbar.controller.config';
 import {Button} from '@/components/toolbar/toolbar.button';
 
 export class ButtonGroup extends Controller {
@@ -11,7 +11,7 @@ export class ButtonGroup extends Controller {
 
     this.buttons = {};
     this.nameButtons = [];
-    stateToCssConfiguration[this.name].value.forEach((btn) => {
+    controllersConfiguration[this.name].value.forEach((btn) => {
       this.buttons[btn.name] = new Button(btn.name, btn['material-icon']);
       this.nameButtons.push(btn.name);
     });

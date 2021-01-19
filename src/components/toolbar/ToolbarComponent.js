@@ -8,8 +8,9 @@ import {etypes} from '@core/Emitter';
 import {eo} from '@core/ExtendedObj';
 import {
   stateToCss,
-  stateToCssConfiguration,
-} from '@/components/toolbar/toolbar.state&css';
+  controllersConfiguration,
+} from '@/components/toolbar/toolbar.controller.config';
+import {Selector} from '@/components/toolbar/toolbar.selector';
 
 export class ToolbarComponent extends ExcelComponent {
   static className = ['excel__toolbar', 'box-shadow'];
@@ -48,9 +49,19 @@ export class ToolbarComponent extends ExcelComponent {
       metaData: metaDataCreator('underline'),
       changeEmitter,
     });
+    const fontFamily = new Selector({
+      name: 'fontFamily',
+      metaData: metaDataCreator('fontFamily'),
+      changeEmitter,
+    });
+    const fontSize = new Selector({
+      name: 'fontSize',
+      metaData: metaDataCreator('fontSize'),
+      changeEmitter,
+    });
 
-    this.controllers = {align, bold, italic, underline};
-    this.orderOfTheControllers = [align, bold, italic, underline];
+    this.controllers = {align, bold, italic, underline, fontFamily, fontSize};
+    this.orderOfTheControllers = [align, bold, italic, underline, fontFamily, fontSize];
 
     this.setTargetCell = this.setTargetCell.bind(this);
     this.$on(etypes.TABLE_CURRENTCELL_SWITCHED, this.setTargetCell);
@@ -92,7 +103,7 @@ export class ToolbarComponent extends ExcelComponent {
   onChange(event) {
     console.log(event.target);
     const $target = $(event.target);
-    const meta = $target.dataset['button'];
+    const meta = $target.dataset['controller'];
     if (meta) {
       this.controllers[meta].onClick(event);
     }
@@ -163,7 +174,7 @@ export class ToolbarComponent extends ExcelComponent {
 
 
 function metaDataCreator(value) {
-  return {'data-button': value};
+  return {'data-controller': value};
 }
 
 function _changeEmitter(context, state) {
@@ -183,10 +194,10 @@ function _changeEmitter(context, state) {
       ...state,
     };
     context.tableCell.setDecoration(
-        eo(state).map((k, v) => stateToCss[k][v])
+        eo(state).map((k, v) => stateToCss[k](v))
     );
     eo(context.state).forEach((k, v) => {
-      if (v === stateToCssConfiguration[k].default) {
+      if (v === controllersConfiguration[k].default) {
         delete context.state[k];
       }
     });

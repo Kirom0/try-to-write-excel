@@ -1,6 +1,6 @@
 import {Controller} from '@/components/toolbar/toolbar.controller';
 import {Button} from '@/components/toolbar/toolbar.button';
-import {stateToCssConfiguration} from '@/components/toolbar/toolbar.state&css';
+import {controllersConfiguration} from '@/components/toolbar/toolbar.controller.config';
 
 export class ToggleButton extends Controller {
   constructor(options) {
@@ -8,7 +8,7 @@ export class ToggleButton extends Controller {
     const {metaData} = options;
     this.metaData = metaData;
 
-    const btnValue = stateToCssConfiguration[this.name]['material-icon'];
+    const btnValue = controllersConfiguration[this.name]['material-icon'];
     this.button = new Button(this.name, btnValue);
   }
 
