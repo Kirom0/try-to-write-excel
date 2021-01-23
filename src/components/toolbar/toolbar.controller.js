@@ -10,8 +10,6 @@ export class Controller {
 
   changeState(key, value) {
     this._state[key] = value;
-    // eslint-disable-next-line no-debugger
-    debugger;
     this.changeEmitter(this.state);
   }
 

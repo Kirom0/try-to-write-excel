@@ -3,5 +3,6 @@ export const initialState = {
     columnSizes: {},
     rowSizes: {},
     cells: {},
+    header: 'New table',
   },
 };

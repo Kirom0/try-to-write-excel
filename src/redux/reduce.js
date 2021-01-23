@@ -32,6 +32,9 @@ export function reduce(state, action) {
       createCell(action.data.cellId);
       newState.cells[action.data.cellId].decoration = action.data.state;
       return newState;
+    case atype.HEADER_CHANGED:
+      newState.header = action.data;
+      return newState;
     default: return newState;
   }
 }

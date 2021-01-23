@@ -5,7 +5,7 @@ import {ToolbarComponent} from '@/components/toolbar/ToolbarComponent';
 import {FormulaComponent} from '@/components/formula/FormulaComponent';
 import {TableComponent} from '@/components/table/TableComponent';
 import {createStore} from '@/redux/createStore';
-import {storage} from '@core/utils';
+import {debounce, storage} from '@core/utils';
 import {initialState} from '@/redux/initialState';
 
 const store = createStore(
@@ -13,10 +13,12 @@ const store = createStore(
   storage('excel_state', initialState['excel_state'])
 );
 
-store.subscribe(['ALL'], (state) => {
+const changeStorage = debounce((state) => {
   console.log('App state: ', state);
   storage('excel_state', state);
-});
+}, 1000);
+
+store.subscribe(['ALL'], changeStorage);
 
 const excel = new Excel('#app', {
   components: [

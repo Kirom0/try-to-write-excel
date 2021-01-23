@@ -51,8 +51,6 @@ export class Selector extends Controller {
   }
 
   onClick(event) {
-    console.log('Selector onClick');
-    console.log(event);
     this.currentValue = event.target.value;
   }
 

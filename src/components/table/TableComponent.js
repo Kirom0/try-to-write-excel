@@ -58,7 +58,7 @@ export class TableComponent extends ExcelComponent {
     this.VResizer = new NewResizer(this, 'OY', this.rowSizes);
 
     this.$on(etypes.FORMULA_VALUE_CHANGED, this.eFormulaChanged);
-    this.$on(etypes.FORMULA_VALUE_CHANGED, this.eFormulaEnter);
+    this.$on(etypes.FORMULA_ENTER, this.eFormulaEnter);
 
     this.applyState();
   }

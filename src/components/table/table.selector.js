@@ -163,7 +163,6 @@ export class Selector {
   static keyNeedReact = ['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'Enter', 'Tab'];
 
   keyDownHandler(event) {
-    console.log(event);
     const {shiftKey, code} = event;
     if (!shiftKey && Selector.keyNeedReact.includes(code)) {
       let changed = false;

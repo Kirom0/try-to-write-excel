@@ -4,6 +4,7 @@ export const atype = { // Action type
   CELL_CHANGED: 'CELL_CHANGED',
   TOOLBAR_STATE_CHANGED: 'TOOLBAR_STATE_CHANGED',
   CELL_DECORATION_CHANGED: 'CELL_DECORATION_CHANGED',
+  HEADER_CHANGED: 'HEADER_CHANGED',
 };
 
 export function createAction(atype, data) {

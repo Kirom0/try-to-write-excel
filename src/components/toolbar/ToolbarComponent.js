@@ -101,74 +101,11 @@ export class ToolbarComponent extends ExcelComponent {
   }
 
   onChange(event) {
-    console.log(event.target);
     const $target = $(event.target);
     const meta = $target.dataset['controller'];
     if (meta) {
       this.controllers[meta].onClick(event);
     }
-  }
-
-  toHtml() {
-    return `
-  <div class="button__container">
-    <input id="alignLeft" type="radio" name="align" value="alignLeft" checked>
-    <label for="alignLeft">
-      <i class="material-icons button">format_align_left</i>
-    </label>
-  </div>
-
-  <div class="button__container">
-    <input id="alignCenter" type="radio" name="align" value="alignCenter">
-    <label for="alignCenter">
-      <i class="material-icons button">format_align_center</i>
-    </label>
-  </div>
-
-  <div class="button__container">
-    <input id="alignRight" type="radio" name="align" value="alignRight">
-    <label for="alignRight">
-      <i class="material-icons button">format_align_right</i>
-    </label>
-  </div>
-
-  <div class="button__container">
-    <input id="bold" type="checkbox" value="bold">
-    <label for="bold">
-      <i class="material-icons button">format_bold</i>
-    </label>
-  </div>
-
-  <div class="button__container">
-    <input id="italic" type="checkbox" value="italic">
-    <label for="italic">
-      <i class="material-icons button">format_italic</i>
-    </label>
-  </div>
-
-  <div class="button__container">
-    <input id="underline" type="checkbox" value="underline">
-    <label for="underline">
-      <i class="material-icons button">format_underlined</i>
-    </label>
-  </div>
-  
-  <div class="button__container">
-    <select>
-      <option value="12">12px</option>
-      <option value="14">14px</option>
-      <option value="16">16px</option>
-      <option value="18">18px</option>
-    </select>
-</div>
-`;
-    /* <i class="material-icons button">format_align_left</i>
-      <i class="material-icons button">format_align_center</i>
-      <i class="material-icons button">format_align_right</i>
-      <i class="material-icons button">format_bold</i>
-      <i class="material-icons button">format_italic</i>
-      <i class="material-icons button">format_underlined</i>
-    `; */
   }
 }
 
@@ -202,7 +139,6 @@ function _changeEmitter(context, state) {
       }
     });
 
-    console.log('changeEmit: ', context.state);
     context.store.dispatch(
         createAction(atype.TOOLBAR_STATE_CHANGED, {
           cellId: context._tableCell.id,
