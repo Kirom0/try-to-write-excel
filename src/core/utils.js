@@ -9,3 +9,27 @@ export function range(number) {
   }
   return result;
 }
+
+export function storage(key, value) {
+  if (!value) {
+    try {
+      return JSON.parse(localStorage.getItem(key) || undefined);
+    } catch (e) {
+      return undefined;
+    }
+  }
+  localStorage.setItem(key, JSON.stringify(value));
+  return value;
+}
+
+export function debounce(fn, wait) {
+  let timeout;
+  return function(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      fn(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}

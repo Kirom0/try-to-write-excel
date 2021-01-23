@@ -12,6 +12,8 @@ export class ExcelComponent extends DomListener {
     this.emitter = options.emitter;
     this.unsubs = new Map();
 
+    this.store = options.store;
+
     binding(
         [].concat(
             (options.listeners || []).map(getMethodName),
@@ -21,12 +23,20 @@ export class ExcelComponent extends DomListener {
     );
   }
 
-  on(emitterEvent, fn) {
+  $on(emitterEvent, fn) {
     this.unsubs.set(emitterEvent, this.emitter.subscribe(emitterEvent, fn));
   }
 
-  off(emitterEvent) {
+  $off(emitterEvent) {
     this.unsubs.delete(emitterEvent);
+  }
+
+  $emit(emitterEvent, ...data) {
+    this.emitter.emit(emitterEvent, ...data);
+  }
+
+  subscribe(types, fn) {
+    this.storeUnsub = this.store.subscribe(types, fn);
   }
 
   init() {
@@ -36,6 +46,9 @@ export class ExcelComponent extends DomListener {
 
   destroy() {
     this.unsubs.forEach((unsub) => unsub());
+    if (this.storeUnsub) {
+      this.storeUnsub();
+    }
     this.removeListeners();
   }
 

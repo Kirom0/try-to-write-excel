@@ -9,11 +9,11 @@ export class SumsArray {
     this.#prefSum = this.#array.map((el, index) => el * (index + 1));
     console.log(this.#prefSum);
     this.#listeners = changeListeners;
-
-    this.state = new Proxy(this, {
+    this._state = new Proxy(this, {
       set(target, prop, value) {
         if (prop in target) {
           new Error(`No ${prop} in target`);
+          return false;
         }
         const difference = value - target.#array[prop];
         if (difference !== 0) {
@@ -22,13 +22,17 @@ export class SumsArray {
           }
           target.#array[prop] = value;
           target.callListeners();
-          return true;
         }
+        return true;
       },
       get(target, prop) {
         return target.#array[prop];
       },
     });
+  }
+
+  get state() {
+    return this._state;
   }
 
   get length() {

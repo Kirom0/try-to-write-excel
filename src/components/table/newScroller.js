@@ -2,21 +2,23 @@ export class NewScroller {
   constructor(
       table,
       scrollerType,
-      nativeTable,
-      nativeHeadline,
-      nativeScroller,
       sumsArray
   ) {
     this.table = table;
-    this.nativeTable = nativeTable;
-    this.nativeHeadline = nativeHeadline;
-    this.nativeScroller = nativeScroller;
+    this.scrollerType = scrollerType;
     this.sumsArray = sumsArray;
+
+    this.refresh = this.refresh.bind(this);
+
+    this.prepare();
+  }
+
+  prepare() {
     this.indexOfCurrent = 0;
     this.indexOfLastInView = 0;
 
-    this.scrollerType = scrollerType;
-    if (scrollerType === 'OX') {
+
+    if (this.scrollerType === 'OX') {
       this.propNames = {
         indent: 'left',
         coordinateFromEvent: 'clientX',
@@ -79,8 +81,12 @@ export class NewScroller {
         },
       },
     });
+  }
 
-    this.refresh = this.refresh.bind(this);
+  init(nativeTable, nativeHeadline, nativeScroller) {
+    this.nativeTable = nativeTable;
+    this.nativeHeadline = nativeHeadline;
+    this.nativeScroller = nativeScroller;
   }
 
   setViewIndent(indent) {
