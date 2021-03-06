@@ -1,9 +1,8 @@
-import {ExcelComponent} from '@core/ExcelComponent';
+import {Component} from '@core/Component';
 import {ButtonGroup} from '@/components/toolbar/toolbar.buttonGroup';
 import {$} from '@core/dom';
 import {ToggleButton} from '@/components/toolbar/toolbar.toggleButton';
 import {atype, createAction} from '@/redux/actions';
-import {CSSRules} from '@core/css';
 import {etypes} from '@core/Emitter';
 import {eo} from '@core/ExtendedObj';
 import {
@@ -12,7 +11,7 @@ import {
 } from '@/components/toolbar/toolbar.controller.config';
 import {Selector} from '@/components/toolbar/toolbar.selector';
 
-export class ToolbarComponent extends ExcelComponent {
+export class ToolbarComponent extends Component {
   static className = ['excel__toolbar', 'box-shadow'];
   constructor($root, options = {}) {
     super($root, {
@@ -25,7 +24,6 @@ export class ToolbarComponent extends ExcelComponent {
   }
 
   prepare() {
-    this.cssRules = new CSSRules();
     this.state = {};
 
     const changeEmitter = (state) => _changeEmitter(this, state);

@@ -1,7 +1,7 @@
-import {ExcelComponent} from '@core/ExcelComponent';
+import {Component} from '@core/Component';
 import {etypes} from '@core/Emitter';
 
-export class FormulaComponent extends ExcelComponent {
+export class FormulaComponent extends Component {
   static className = 'excel__formula';
   constructor($root, options = {}) {
     super($root, {

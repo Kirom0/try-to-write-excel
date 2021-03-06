@@ -1,11 +1,10 @@
 import {arrayFrom} from '@core/utils';
+import {$} from '@core/dom';
 
 export class CSSRules {
   constructor(styles) {
-    this.styleElement = document.createElement('style');
-    document.body.append(this.styleElement);
-
     this.styles = styles || {};
+    this._styleElement = $.create('style');
   }
 
   addRules(arrayOfRules) {
@@ -40,7 +39,11 @@ export class CSSRules {
       }}`;
     });
 
-    this.styleElement.innerHTML = result;
+    this.styleElement.html = result;
+  }
+
+  get styleElement() {
+    return this._styleElement;
   }
 }
 

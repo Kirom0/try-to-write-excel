@@ -1,34 +1,13 @@
 import './scss/index.scss';
-import {Excel} from '@core/Excel';
-import {HeaderComponent} from '@/components/header/HeaderComponent';
-import {ToolbarComponent} from '@/components/toolbar/ToolbarComponent';
-import {FormulaComponent} from '@/components/formula/FormulaComponent';
-import {TableComponent} from '@/components/table/TableComponent';
-import {createStore} from '@/redux/createStore';
-import {debounce, storage} from '@core/utils';
-import {initialState} from '@/redux/initialState';
+import {Router} from '@core/routes/Router';
+import {DashboardPage} from '@/pages/DashboardPage';
+import {ExcelPage} from '@/pages/ExcelPage';
 
-const store = createStore(
-    storage('excel_state') ||
-  storage('excel_state', initialState['excel_state'])
-);
-
-const changeStorage = debounce((state) => {
-  console.log('App state: ', state);
-  storage('excel_state', state);
-}, 1000);
-
-store.subscribe(['ALL'], changeStorage);
-
-const excel = new Excel('#app', {
-  components: [
-    HeaderComponent,
-    ToolbarComponent,
-    FormulaComponent,
-    TableComponent,
-  ],
-  classes: 'excel',
-  store,
+const router = new Router('#app', {
+  default: 'dashboard',
+  routes: {
+    dashboard: DashboardPage,
+    excel: ExcelPage,
+  },
 });
-
-excel.render();
+router.init();
