@@ -1,4 +1,4 @@
-import {ExcelComponent} from '@core/ExcelComponent';
+import {Component} from '@core/Component';
 import {
   getPureHtml, getTemplate,
 } from '@/components/table/table.template';
@@ -18,7 +18,7 @@ import {atype} from '@/redux/actions';
 import {etypes} from '@core/Emitter';
 import {initCellDecoration} from '@/components/toolbar/toolbar.functions';
 
-export class TableComponent extends ExcelComponent {
+export class TableComponent extends Component {
   static className = 'excel__table';
   constructor($root, options = {}) {
     super($root, {
@@ -41,8 +41,21 @@ export class TableComponent extends ExcelComponent {
 
   prepare() {
     this.cssRules = new CSSRules();
-    this.columnSizes = new SumsArrayWrapper([this.cols, 120, []], (index) => `[data-column-title="${index}"]`);
-    this.rowSizes = new SumsArrayWrapper([this.rows, 24, []], (index) => `[data-row-title="${index}"]`);
+    const getSetCSSFunction = (getSelector) =>
+      (index, value) => {
+        this.cssRules.addRules({
+          [getSelector(index)]: {
+            'flex-basis': value + 'px !important',
+          },
+        });
+      };
+    this.columnSizes = new SumsArrayWrapper(
+        getSetCSSFunction((index) => `[data-column-title="${index}"]`),
+        [this.cols, 120, []],
+    );
+    this.rowSizes = new SumsArrayWrapper(
+        getSetCSSFunction((index) => `[data-row-title="${index}"]`),
+        [this.rows, 24, []]);
     this.selector = new Selector(this, this.rowSizes, this.columnSizes);
 
     this.cells = range(this.rows)
@@ -200,6 +213,7 @@ export class TableComponent extends ExcelComponent {
   htmlInitial() {
     console.log(this.cells);
     this.$root.append(getTemplate(this.cells, this.rows, this.cols));
+    this.$root.append(this.cssRules.styleElement);
   }
 
   toHtml() {

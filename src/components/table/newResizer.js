@@ -29,7 +29,6 @@ export class NewResizer {
   init(nativeTable, nativeResizer) {
     this.nativeTable = nativeTable;
     this.nativeResizer = nativeResizer;
-
     this.spaceBeforeTable = this.nativeTable.getBoundingClientRect()[this.propsNames.lort];
   }
 
